@@ -12,15 +12,15 @@
 #define RC_STATE_NONE		0x000000
 #define RC_STATE_DONE		0x800000
 
-struct readcheats_state {
+struct rc_state {
 	/* line state */
 
 	/* global state */
 	int rcstate;
 };
 
-/* Options tbc. */
-#define RC_OPT_NONE	0
+extern int rc_init();
+extern int rc_destroy();
 
 extern int rc_read(gamelist_t *list, FILE *stream);
 extern int rc_read_file(gamelist_t *list, const char *filename);
@@ -28,5 +28,12 @@ extern int rc_read_buf(gamelist_t *list, const char *buf);
 
 extern int rc_write(const gamelist_t *list, FILE *stream);
 extern int rc_write_file(const gamelist_t *list, const char *filename);
+
+extern const char *rc_error_text();
+extern int rc_error_line();
+
+extern void rc_set_hook(void *hook);
+extern void *rc_get_hook();
+extern void rc_set_destructor(void (*destructor)(void*));
 
 #endif /* _READCHEATS_H_ */
