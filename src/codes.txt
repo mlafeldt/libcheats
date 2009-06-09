@@ -1,13 +1,13 @@
 
-@ID SLES_537.02 - 9746c0089b6525dfdd92c03033e0ee23ef356377
 "Test"
+@ID SLES_537.02 - 9746c0089b6525dfdd92c03033e0ee23ef356377
 bla
 F0100008 0000000A
 
 //--------
 
-@ID SLES_537.02 3097532 02c017f41c0001c0b34dc980f855c4f1e74489e8
 "Resident Evil 4 PAL"
+@ID SLES_537.02 3097532 02c017f41c0001c0b34dc980f855c4f1e74489e8
 Mastercode
 F0100008 0000000A
 Mastercode (alternate)
@@ -37,8 +37,8 @@ No Times Saved Recorded
 
 //--------
 
-@ID SLES_538.86 3371996
 "Black PAL"
+@ID SLES_538.86 3371996
 Mastercode (alternate)
 F0100008 0000000A
 Skip FMV
@@ -72,8 +72,8 @@ Infinite Grenades
 
 //--------
 
-@ID BLACK.ELF 3151384
 "Black Demo PAL"
+@ID BLACK.ELF 3151384
 Mastercode
 F0157DA0 0000000A
 Skip FMV
@@ -96,8 +96,8 @@ D054B058 0000FFFB
 
 //--------
 
-@ID SLES_503.58 6769316
 "Devil May Cry PAL"
+@ID SLES_503.58 6769316
 // sceSifLoadModule: 0x00209C70
 Mastercode
 //F0100008 0010C1DF
@@ -116,9 +116,9 @@ Devil Trigger
 
 //--------
 
-@ID SLED_503.59 5416148
 "Devil May Cry Trial Edition PAL SLED50359"
 (included with Resident Evil CVX)
+@ID SLED_503.59 5416148
 Mastercode
 F0100098 0000000E
 PAL2NTSC M
@@ -136,8 +136,8 @@ Infinite Health (All)
 
 //--------
 
-@ID SLES_820.11 4675416
 "Devil May Cry 2"
+@ID SLES_820.11 4675416
 MasterCode 28 March 2003
 F0100008 00129847
 Unlimited:
@@ -177,8 +177,8 @@ Throwing Daggers Level 28 March 2003
 
 //--------
 
-@ID SLES_503.83 833792
 "Metal Gear Solid 2-Sons Of Liberty PAL"
+@ID SLES_503.83 833792
 Mastercode
 F01650DC 001650DF
 //901650DC 0C05B3FE
@@ -194,8 +194,8 @@ Extra Ammo
 
 //--------
 
-@ID SLES_535.58 4920276
 "NFS Most Wanted"
+@ID SLES_535.58 4920276
 Mastercode
 90494C34 0C1299F3
 //F0436538 0000000E
@@ -206,8 +206,8 @@ A0386520 24020004
 
 //--------
 
-@ID SCES_500.00 1330140
 "Ridge Racer V PAL"
+@ID SCES_500.00 1330140
 Mastercode
 //902C8414 0C0B5F42
 F020009C 0000000E
@@ -238,8 +238,8 @@ D1E35980 00000000
 
 //--------
 
-@ID SLES_500.78 2714195
 "TimeSplitters PAL"
+@ID SLES_500.78 2714195
 // sceSifLoadModule: 0x002D4450
 Mastercode
 902D51F8 0C0B95F6
@@ -261,9 +261,9 @@ Unsichtbar
 
 //--------
 
-@ID SLES_508.77 3820804
 //sceSifLoadModule: 0x0044B8C0
 "TimeSplitters 2 PAL"
+@ID SLES_508.77 3820804
 Mastercode
 9044DBEC 0C12407B
 Unlimited Ammunition
@@ -273,8 +273,8 @@ Unlock All Levels
 
 //--------
 
-@ID SLED_508.84 3218936
 "TimeSplitters 2 Demo PAL"
+@ID SLED_508.84 3218936
 Mastercode
 F02000A4 0000000E
 PAL2NTSC A
@@ -289,8 +289,8 @@ Y-Fix
 
 //--------
 
-@ID SLES_514.66 3776176
 "Tom Clancy's Splinter Cell PAL"
+@ID SLES_514.66 3776176
 Mastercode
 90129A84 0C048534
 Unlock:

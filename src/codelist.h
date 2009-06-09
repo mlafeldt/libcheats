@@ -3,7 +3,6 @@
 
 #include "mytypes.h"
 #include "dllist.h"
-#include "gameid.h"
 
 /* Max game title length */
 #define CL_TITLE_MAX	127
@@ -66,7 +65,6 @@ typedef struct _cheatlist {
  * game_t - structure to hold a game
  * @next: next game in list
  * @prev: previous game in list
- * @id: game id
  * @title: game title
  * @cheats: game cheats
  * @tag: arbitrary information
@@ -74,7 +72,6 @@ typedef struct _cheatlist {
 typedef struct _game {
 	struct _game *next;
 	struct _game *prev;
-	game_id_t id;
 	char title[CL_TITLE_MAX + 1];
 	cheatlist_t cheats;
 	u32 tag;
@@ -95,12 +92,10 @@ typedef struct _gamelist {
 #endif
 void cl_free(gamelist_t *list);
 
-game_t *mkgame(const game_id_t *id, const char *title,
-			const cheatlist_t *cheats, u32 tag);
+game_t *mkgame(const char *title, const cheatlist_t *cheats, u32 tag);
 cheat_t *mkcheat(const char *desc, const codelist_t *codes, u32 tag);
 code_t *mkcode(u32 addr, u32 val, u32 tag);
 
-game_t *cl_find_game_by_id(const game_id_t *id, const gamelist_t *list);
 game_t *cl_find_game_by_title(const char *title, const gamelist_t *list);
 
 void cl_print(const gamelist_t *list);

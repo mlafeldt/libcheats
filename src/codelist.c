@@ -37,14 +37,12 @@ void cl_free(gamelist_t *list)
 
 /**
  * mkgame - Creates a new game_t struct.
- * @id: game id
  * @title: game title
  * @cheats: game cheats
  * @tag: arbitrary information
  * @return: ptr to new game_t struct, or NULL on mem alloc error
  */
-game_t *mkgame(const game_id_t *id, const char *title,
-			const cheatlist_t *cheats, u32 tag)
+game_t *mkgame(const char *title, const cheatlist_t *cheats, u32 tag)
 {
 #ifdef _MEMPOOL
 	/* TODO */
@@ -52,9 +50,6 @@ game_t *mkgame(const game_id_t *id, const char *title,
 	game_t *game = (game_t*)calloc(1, sizeof(game_t));
 #endif
 	if (game != NULL) {
-		if (id != NULL)
-			/* game->id = *id; */
-			memcpy(&game->id, id, sizeof(game_id_t));
 		if (title != NULL)
 			strncpy(game->title, title, CL_TITLE_MAX);
 		if (cheats != NULL)
@@ -111,27 +106,6 @@ code_t *mkcode(u32 addr, u32 val, u32 tag)
 	}
 
 	return code;
-}
-
-/**
- * cl_find_game_by_id - Searches a game list for a game with a certain id.
- * @id: game id to search for
- * @list: game list that is searched
- * @return: ptr to found game_t struct, or NULL if it could not be found
- */
-game_t *cl_find_game_by_id(const game_id_t *id, const gamelist_t *list)
-{
-	if (list != NULL) {
-		game_t *game = list->head;
-
-		while (game != NULL) {
-			if (cmp_game_id(&game->id, id) != GID_F_NONE)
-				return game;
-			game = game->next;
-		}
-	}
-
-	return NULL;
 }
 
 /**

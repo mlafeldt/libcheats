@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include "mystring.h"
 #include "codelist.h"
-#include "gameid.h"
 #include "codeman.h"
 #include "dbgprintf.h"
 
@@ -15,17 +14,13 @@
 /* Max line length to parse, rest is cut off! */
 #define LINE_MAX	255
 
-/* Start of game id string */
-#define ID_START	"@ID"
-
 /* Number of digits per cheat code */
 #define CODE_DIGITS	16
 
 /* Tokens used for parsing */
-#define TOK_GAME_ID	1
-#define TOK_GAME_TITLE	2
-#define TOK_CHEAT_DESC	4
-#define TOK_CHEAT_CODE	8
+#define TOK_GAME_TITLE	1
+#define TOK_CHEAT_DESC	2
+#define TOK_CHEAT_CODE	4
 
 /* Separator inserted between games when writing to text file */
 #define GAME_SEP	"\n//--------\n\n"
@@ -36,37 +31,21 @@
 static const char *tok2str(int tok)
 {
 	static const char *str[] = {
-		"game id",
 		"game title",
 		"cheat description",
 		"cheat code"
 	};
 
 	switch (tok) {
-	case TOK_GAME_ID:
-		return str[0];
 	case TOK_GAME_TITLE:
-		return str[1];
+		return str[0];
 	case TOK_CHEAT_DESC:
-		return str[2];
+		return str[1];
 	case TOK_CHEAT_CODE:
-		return str[3];
+		return str[2];
 	default:
 		return NULL;
 	}
-}
-
-/*
- * is_game_id - Returns 1 if @s indicates a game ID.
- *
- * Example: @ID SLES_123.45 2714195 -
- */
-static int is_game_id(const char *s)
-{
-	size_t len = strlen(ID_START);
-
-	/* get_id() checks the string more carefully */
-	return (strlen(s) >= len) && !strncmp(s, ID_START, len);
 }
 
 /*
@@ -109,9 +88,7 @@ static int is_cheat_code(const char *s)
  */
 static int get_token(const char *s, int top)
 {
-	if ((top == TOK_GAME_ID) && is_game_id(s))
-		return TOK_GAME_ID;
-	else if (is_game_title(s))
+	if (is_game_title(s))
 		return TOK_GAME_TITLE;
 	else if (is_cheat_code(s))
 		return TOK_CHEAT_CODE;
@@ -125,8 +102,6 @@ static int get_token(const char *s, int top)
 int next_token(int tok, int top)
 {
 	switch (tok) {
-	case TOK_GAME_ID:
-		return TOK_GAME_ID | TOK_GAME_TITLE;
 	case TOK_GAME_TITLE:
 		return top | TOK_CHEAT_DESC;
 	case TOK_CHEAT_DESC:
@@ -138,94 +113,9 @@ int next_token(int tok, int top)
 }
 
 /*
- * get_id - Parses the string @s for the game ID.
+ * get_game - Creates a game_t struct from game title.
  */
-static int get_id(const char *s, game_id_t *id)
-{
-	const char *sep = " \t"; /* Tokens are separated by whitespace */
-	char buf[LINE_MAX + 1];
-	char *p = NULL;
-	int i = 0;
-
-	memset(id, 0, sizeof(game_id_t));
-
-	/* strtok() corrupts s, make a copy */
-	strncpy(buf, s + strlen(ID_START), sizeof(buf));
-	p = strtok(buf, sep);
-
-	/* Process tokens */
-	while (p != NULL && i < 3) {
-		if (p[0] != '-') { /* '-' means that the value is not set */
-			switch (i) {
-			case 0: /* name */
-				strncpy(id->name, p, GID_NAME_MAX);
-				to_upper_str(id->name);
-				id->set |= GID_F_NAME;
-#ifdef _DBG_ID
-				D_PRINTF(".name %s\n", id->name);
-#endif
-				break;
-
-			case 1: /* size */
-				if (!is_dec_str(p))
-					return -1;
-				if (!sscanf(p, "%i", &id->size))
-					return -1;
-				id->set |= GID_F_SIZE;
-#ifdef _DBG_ID
-				D_PRINTF(".size %i\n", id->size);
-#endif
-				break;
-
-			case 2: /* hash */
-				if (strlen(p) != (GID_HASH_SIZE * 2) || !is_hex_str(p))
-					return -1;
-				xstr_to_bytes(p, GID_HASH_SIZE, id->hash);
-				id->set |= GID_F_HASH;
-#ifdef _DBG_ID
-				D_PRINTF(".hash %s\n", p);
-#endif
-				break;
-			}
-		}
-
-		i++;
-		p = strtok(NULL, sep);
-	}
-
-	/*if (!id->set)
-		return -1;*/
-
-	return 0;
-}
-
-/*
- * id2str - Converts a game ID to a string.
- */
-static char *id2str(const game_id_t *id)
-{
-	static char str[LINE_MAX + 1];
-	int i;
-
-	i = sprintf(str, ID_START" %s ", (id->set & GID_F_NAME) ? id->name : "-");
-
-	if (id->set & GID_F_SIZE)
-		i += sprintf(str + i, "%i ", id->size);
-	else
-		i += sprintf(str + i, "- ");
-
-	if (id->set & GID_F_HASH)
-		bytes_to_xstr(id->hash, GID_HASH_SIZE, str + i);
-	else
-		sprintf(str + i, "-");
-
-	return str;
-}
-
-/*
- * get_game - Creates a game_t struct from game title and ID.
- */
-static game_t *get_game(const char *title, const game_id_t *id)
+static game_t *get_game(const char *title)
 {
 	char buf[CL_TITLE_MAX + 1];
 
@@ -233,7 +123,7 @@ static game_t *get_game(const char *title, const game_id_t *id)
 	strncpy(buf, title + 1, strlen(title) - 2);
 	buf[strlen(title) - 2] = 0;
 
-	return mkgame(id, buf, NULL, 0);
+	return mkgame(buf, NULL, 0);
 }
 
 /*
@@ -277,7 +167,6 @@ static int is_cmt_str(const char *s)
  * @source: source of codes, e.g. filename
  * @top: token at the top of each game, see TOK_* flags
  * @next: next expected token(s), see TOK_* flags
- * @id: current game id
  * @game: ptr to current game
  * @cheat: ptr to current cheat
  * @code: ptr to current code
@@ -286,7 +175,6 @@ typedef struct _parser_ctx {
 	const char *source;
 	int top;
 	int next;
-	game_id_t id;
 	game_t *game;
 	cheat_t *cheat;
 	code_t *code;
@@ -302,7 +190,6 @@ static void init_parser(parser_ctx_t *ctx, const char *source, int top)
 		ctx->source = source;
 		ctx->top = top;
 		ctx->next = top;
-		memset(&ctx->id, 0, sizeof(game_id_t));
 		ctx->game = NULL;
 		ctx->cheat = NULL;
 		ctx->code = NULL;
@@ -344,21 +231,14 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 			x = TOK_CHEAT_DESC;
 		else if (ctx->next & TOK_GAME_TITLE)
 			x = TOK_GAME_TITLE;
-		else if (ctx->next & TOK_GAME_ID)
-			x = TOK_GAME_ID;
 		return parse_err(ctx, nl, "%s invalid here; %s expected\n",
 			tok2str(tok), tok2str(x));
 	}
 
 	/* Process actual token and add it to the list it belongs to. */
 	switch (tok) {
-	case TOK_GAME_ID:
-		if (get_id(line, &ctx->id) < 0)
-			return parse_err(ctx, nl, "invalid game id\n");
-		break;
-
 	case TOK_GAME_TITLE:
-		ctx->game = get_game(line, &ctx->id);
+		ctx->game = get_game(line);
 		if (ctx->game == NULL)
 			return parse_err(ctx, nl, "mem alloc failure in get_game()\n");
 		cl_add(list, ctx->game);
@@ -405,8 +285,7 @@ int codes_from_textfile(const char *filename, gamelist_t *list, int opt)
 	if (fp == NULL)
 		return -1;
 
-	init_parser(&ctx, filename, (opt & CODES_OPT_GID) ?
-		TOK_GAME_ID : TOK_GAME_TITLE);
+	init_parser(&ctx, filename, TOK_GAME_TITLE);
 
 	while (fgets(line, sizeof(line), fp) != NULL) { /* Scanner */
 		if (!is_empty_str(line)) {
@@ -444,8 +323,7 @@ int codes_from_textbuf(const char *buf, const char *source, gamelist_t *list, in
 	int nl = 1;
 	int ret = 0;
 
-	init_parser(&ctx, source, (opt & CODES_OPT_GID) ?
-		TOK_GAME_ID : TOK_GAME_TITLE);
+	init_parser(&ctx, source, TOK_GAME_TITLE);
 
 	while (*buf) {
 		/* Scanner */
@@ -494,8 +372,6 @@ int codes_to_textfile(const char *filename, const gamelist_t *list, int opt)
 		return -1;
 
 	for (game = list->head; game != NULL; game = game->next) {
-		if (opt & CODES_OPT_GID)
-			fprintf(fp, "%s\n", id2str(&game->id));
 		fprintf(fp, "\"%s\"\n", game->title);
 		for (cheat = game->cheats.head; cheat != NULL; cheat = cheat->next) {
 			fprintf(fp, "%s\n", cheat->desc);
