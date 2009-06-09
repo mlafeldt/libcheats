@@ -263,7 +263,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 	return 0;
 }
 
-int rc_read(gamelist_t *list, FILE *stream)
+int cheats_read(cheats_t *cheats, FILE *stream)
 {
 	return 0;
 }
@@ -273,17 +273,17 @@ int rc_read(gamelist_t *list, FILE *stream)
  * @list: list to add codes to
  * @filename: name of text file to parse
  * @return: 0: success, <0: error
- *
- * Uses fgets() to read each line from the text file. Should not be used on the
- * PS2 as file I/O operations are very slow there.
  */
-int rc_read_file(gamelist_t *list, const char *filename)
+int cheats_read_file(cheats_t *cheats, const char *filename)
 {
 	FILE *fp;
 	parser_ctx_t ctx;
 	char line[LINE_MAX + 1];
 	int nl = 1;
 	int ret = 0;
+
+	if (cheats == NULL || filename == NULL)
+		return -1;
 
 	fp = fopen(filename, "r");
 	if (fp == NULL)
@@ -298,7 +298,7 @@ int rc_read_file(gamelist_t *list, const char *filename)
 			trim_str(line);
 			if (strlen(line) > 0) {
 				/* Parser */
-				ret = parse_line(line, nl, &ctx, list);
+				ret = parse_line(line, nl, &ctx, &cheats->games);
 				if (ret < 0) break; /* return on error */
 			}
 		}
@@ -314,16 +314,16 @@ int rc_read_file(gamelist_t *list, const char *filename)
  * @list: list to add codes to
  * @buf: buffer holding text (must be NUL-terminated!)
  * @return: 0: success, <0: error
- *
- * On PS2, this is the preferred way to read codes from a text file as file I/O
- * operations are very slow.
  */
-int rc_read_buf(gamelist_t *list, const char *buf)
+int cheats_read_buf(cheats_t *cheats, const char *buf)
 {
 	parser_ctx_t ctx;
 	char line[LINE_MAX + 1];
 	int nl = 1;
 	int ret = 0;
+
+	if (cheats == NULL || buf == NULL)
+		return -1;
 
 	init_parser(&ctx, "buffer", TOK_GAME_TITLE);
 
@@ -344,7 +344,7 @@ int rc_read_buf(gamelist_t *list, const char *buf)
 			trim_str(line);
 			if (strlen(line) > 0) {
 				/* Parser */
-				ret = parse_line(line, nl, &ctx, list);
+				ret = parse_line(line, nl, &ctx, &cheats->games);
 				if (ret < 0) break; /* return on error */
 			}
 		}
@@ -355,7 +355,7 @@ int rc_read_buf(gamelist_t *list, const char *buf)
 	return ret;
 }
 
-int rc_write(const gamelist_t *list, FILE *stream)
+int cheats_write(const cheats_t *cheats, FILE *stream)
 {
 	return 0;
 }
@@ -366,18 +366,21 @@ int rc_write(const gamelist_t *list, FILE *stream)
  * @filename: name of file to write codes to
  * @return: 0: success, <0: error
  */
-int rc_write_file(const gamelist_t *list, const char *filename)
+int cheats_write_file(const cheats_t *cheats, const char *filename)
 {
 	FILE *fp;
 	game_t *game;
 	cheat_t *cheat;
 	code_t *code;
 
+	if (cheats == NULL || filename == NULL)
+		return -1;
+
 	fp = fopen(filename, "w");
 	if (fp == NULL)
 		return -1;
 
-	for (game = list->head; game != NULL; game = game->next) {
+	for (game = cheats->games.head; game != NULL; game = game->next) {
 		fprintf(fp, "\"%s\"\n", game->title);
 		for (cheat = game->cheats.head; cheat != NULL; cheat = cheat->next) {
 			fprintf(fp, "%s\n", cheat->desc);
@@ -390,4 +393,19 @@ int rc_write_file(const gamelist_t *list, const char *filename)
 
 	fclose(fp);
 	return 0;
+}
+
+void cheats_init(cheats_t *cheats)
+{
+	if (cheats != NULL) {
+		memset(cheats, 0, sizeof(cheats_t));
+		cl_init(&cheats->games);
+	}
+}
+
+void cheats_destroy(cheats_t *cheats)
+{
+	if (cheats != NULL) {
+		cl_free(&cheats->games);
+	}
 }

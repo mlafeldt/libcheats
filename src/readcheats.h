@@ -4,36 +4,30 @@
 #include "codelist.h"
 
 /* Version information */
-#define RC_READCHEATS_VERSION	0x0100	/* Readcheats 1.0 */
-#define RC_VERSION_MAJOR	1
-#define RC_VERSION_MINOR	0
+#define LIBCHEATS_VERSION	0x0100	/* libcheats 1.0 */
+#define LIBCHEATS_VERSION_MAJOR	1
+#define LIBCHEATS_VERSION_MINOR	0
 
-/* Possible state values for rc_readcheats_state */
-#define RC_STATE_NONE		0x000000
-#define RC_STATE_DONE		0x800000
 
-struct rc_state {
-	/* line state */
+typedef struct {
+	gamelist_t	games;
+	void		(*destructor)(void *);
+	int		flags;
+	const char	*error_text;
+	int		error_line;
+} cheats_t;
 
-	/* global state */
-	int rcstate;
-};
+extern void cheats_init(cheats_t *cheats);
+extern void cheats_destroy(cheats_t *cheats);
 
-extern int rc_init();
-extern int rc_destroy();
+extern int cheats_read(cheats_t *cheats, FILE *stream);
+extern int cheats_read_file(cheats_t *cheats, const char *filename);
+extern int cheats_read_buf(cheats_t *cheats, const char *buf);
 
-extern int rc_read(gamelist_t *list, FILE *stream);
-extern int rc_read_file(gamelist_t *list, const char *filename);
-extern int rc_read_buf(gamelist_t *list, const char *buf);
+extern int cheats_write(const cheats_t *cheats, FILE *stream);
+extern int cheats_write_file(const cheats_t *cheats, const char *filename);
 
-extern int rc_write(const gamelist_t *list, FILE *stream);
-extern int rc_write_file(const gamelist_t *list, const char *filename);
-
-extern const char *rc_error_text();
-extern int rc_error_line();
-
-extern void rc_set_hook(void *hook);
-extern void *rc_get_hook();
-extern void rc_set_destructor(void (*destructor)(void*));
+extern const char *cheats_error_text(const cheats_t *cheats);
+extern int cheats_error_line(const cheats_t *cheats);
 
 #endif /* _READCHEATS_H_ */

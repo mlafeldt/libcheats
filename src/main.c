@@ -4,14 +4,14 @@
 
 int main(int argc, char *argv[])
 {
-	gamelist_t list;
+	cheats_t cheats;
 
-	cl_init(&list);
+	cheats_init(&cheats);
+	cheats_read_file(&cheats, argv[1]);
+	cheats_write_file(&cheats, "out");
 
-	rc_read_file(&list, argv[1]);
-
-	cl_print(&list);
-	cl_free(&list);
+	cl_print(&cheats.games);
+	cheats_destroy(&cheats);
 
 	return 0;
 }
