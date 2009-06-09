@@ -263,15 +263,47 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 	return 0;
 }
 
+
+
+/**
+ * cheats_init - Initialize a cheats object.
+ * @cheats: cheats
+ */
+void cheats_init(cheats_t *cheats)
+{
+	if (cheats != NULL) {
+		memset(cheats, 0, sizeof(cheats_t));
+		cl_init(&cheats->games);
+	}
+}
+
+/**
+ * cheats_destroy - Destroy a cheats object, deallocate all memory associated
+ * with it, but not including the cheats_t structure itself.
+ * @cheats: cheats
+ */
+void cheats_destroy(cheats_t *cheats)
+{
+	if (cheats != NULL) {
+		cl_free(&cheats->games);
+	}
+}
+
+/**
+ * cheats_read - Read cheats from a stream.
+ * @cheats: cheats
+ * @stream: stream to read cheats from
+ * @return: 0: success, <0: error
+ */
 int cheats_read(cheats_t *cheats, FILE *stream)
 {
 	return 0;
 }
 
 /**
- * rc_read_file - Parses a text file for codes and adds them to a list.
- * @list: list to add codes to
- * @filename: name of text file to parse
+ * cheats_read_file - Read cheats from a text file.
+ * @cheats: cheats
+ * @filename: name of file to read cheats from
  * @return: 0: success, <0: error
  */
 int cheats_read_file(cheats_t *cheats, const char *filename)
@@ -310,8 +342,8 @@ int cheats_read_file(cheats_t *cheats, const char *filename)
 }
 
 /**
- * rc_read_buf - Parses a text buffer for codes and adds them to a list.
- * @list: list to add codes to
+ * cheats_read_buf - Read cheats from a text buffer.
+ * @cheats: cheats
  * @buf: buffer holding text (must be NUL-terminated!)
  * @return: 0: success, <0: error
  */
@@ -355,15 +387,21 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
 	return ret;
 }
 
+/**
+ * cheats_write - Write cheats to a stream.
+ * @cheats: cheats
+ * @stream: stream to write cheats to
+ * @return: 0: success, <0: error
+ */
 int cheats_write(const cheats_t *cheats, FILE *stream)
 {
 	return 0;
 }
 
 /**
- * rc_write_file - Writes all codes in a list to a text file.
- * @list: list with codes
- * @filename: name of file to write codes to
+ * cheats_write_file - Write cheats to a text file.
+ * @cheats: cheats
+ * @filename: name of file to write cheats to
  * @return: 0: success, <0: error
  */
 int cheats_write_file(const cheats_t *cheats, const char *filename)
@@ -393,19 +431,4 @@ int cheats_write_file(const cheats_t *cheats, const char *filename)
 
 	fclose(fp);
 	return 0;
-}
-
-void cheats_init(cheats_t *cheats)
-{
-	if (cheats != NULL) {
-		memset(cheats, 0, sizeof(cheats_t));
-		cl_init(&cheats->games);
-	}
-}
-
-void cheats_destroy(cheats_t *cheats)
-{
-	if (cheats != NULL) {
-		cl_free(&cheats->games);
-	}
 }
