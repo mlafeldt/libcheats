@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "mystring.h"
 #include "codelist.h"
-#include "codeman.h"
+#include "readcheats.h"
 #include "dbgprintf.h"
 
 /* Debug stuff */
@@ -264,7 +264,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 }
 
 /**
- * codes_from_textfile - Parses a text file for codes and adds them to a list.
+ * rc_from_textfile - Parses a text file for codes and adds them to a list.
  * @filename: name of text file to parse
  * @list: list to add codes to
  * @opt: flag CODES_OPT_GID: text is expected to contain game ids
@@ -273,7 +273,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
  * Uses fgets() to read each line from the text file. Should not be used on the
  * PS2 as file I/O operations are very slow there.
  */
-int codes_from_textfile(const char *filename, gamelist_t *list, int opt)
+int rc_from_textfile(const char *filename, gamelist_t *list, int opt)
 {
 	FILE *fp;
 	parser_ctx_t ctx;
@@ -306,7 +306,7 @@ int codes_from_textfile(const char *filename, gamelist_t *list, int opt)
 }
 
 /**
- * codes_from_textbuf - Parses a text buffer for codes and adds them to a list.
+ * rc_from_textbuf - Parses a text buffer for codes and adds them to a list.
  * @buf: buffer holding text (must be NUL-terminated!)
  * @source: source of text that is parsed, e.g. filename
  * @list: list to add codes to
@@ -316,7 +316,7 @@ int codes_from_textfile(const char *filename, gamelist_t *list, int opt)
  * On PS2, this is the preferred way to read codes from a text file as file I/O
  * operations are very slow.
  */
-int codes_from_textbuf(const char *buf, const char *source, gamelist_t *list, int opt)
+int rc_from_textbuf(const char *buf, const char *source, gamelist_t *list, int opt)
 {
 	parser_ctx_t ctx;
 	char line[LINE_MAX + 1];
@@ -354,13 +354,13 @@ int codes_from_textbuf(const char *buf, const char *source, gamelist_t *list, in
 }
 
 /**
- * codes_to_textfile - Writes all codes in a list to a text file.
+ * rc_to_textfile - Writes all codes in a list to a text file.
  * @filename: name of file to write codes to
  * @list: list with codes
  * @opt: flag CODES_OPT_GID: also write game ids to text file
  * @return: 0: success, <0: error
  */
-int codes_to_textfile(const char *filename, const gamelist_t *list, int opt)
+int rc_to_textfile(const char *filename, const gamelist_t *list, int opt)
 {
 	FILE *fp;
 	game_t *game;

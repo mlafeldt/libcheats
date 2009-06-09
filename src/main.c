@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "mytypes.h"
-#include "codeman.h"
+#include "readcheats.h"
 
 int main(int argc, char *argv[])
 {
@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 
 	cl_init(&list);
 
-	codes_from_textfile(argv[1], &list, CODES_OPT_GID);
+	rc_from_textfile(argv[1], &list, 0);
 
 	cl_print(&list);
 	cl_free(&list);
