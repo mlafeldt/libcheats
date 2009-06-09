@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 
 	cl_init(&list);
 
-	rc_from_textfile(argv[1], &list, 0);
+	rc_read_file(&list, argv[1]);
 
 	cl_print(&list);
 	cl_free(&list);

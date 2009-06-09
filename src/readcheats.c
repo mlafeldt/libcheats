@@ -263,17 +263,21 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 	return 0;
 }
 
+int rc_read(gamelist_t *list, FILE *stream)
+{
+	return 0;
+}
+
 /**
- * rc_from_textfile - Parses a text file for codes and adds them to a list.
- * @filename: name of text file to parse
+ * rc_read_file - Parses a text file for codes and adds them to a list.
  * @list: list to add codes to
- * @opt: flag CODES_OPT_GID: text is expected to contain game ids
+ * @filename: name of text file to parse
  * @return: 0: success, <0: error
  *
  * Uses fgets() to read each line from the text file. Should not be used on the
  * PS2 as file I/O operations are very slow there.
  */
-int rc_from_textfile(const char *filename, gamelist_t *list, int opt)
+int rc_read_file(gamelist_t *list, const char *filename)
 {
 	FILE *fp;
 	parser_ctx_t ctx;
@@ -306,24 +310,22 @@ int rc_from_textfile(const char *filename, gamelist_t *list, int opt)
 }
 
 /**
- * rc_from_textbuf - Parses a text buffer for codes and adds them to a list.
- * @buf: buffer holding text (must be NUL-terminated!)
- * @source: source of text that is parsed, e.g. filename
+ * rc_read_buf - Parses a text buffer for codes and adds them to a list.
  * @list: list to add codes to
- * @opt: flag CODES_OPT_GID: text is expected to contain game ids
+ * @buf: buffer holding text (must be NUL-terminated!)
  * @return: 0: success, <0: error
  *
  * On PS2, this is the preferred way to read codes from a text file as file I/O
  * operations are very slow.
  */
-int rc_from_textbuf(const char *buf, const char *source, gamelist_t *list, int opt)
+int rc_read_buf(gamelist_t *list, const char *buf)
 {
 	parser_ctx_t ctx;
 	char line[LINE_MAX + 1];
 	int nl = 1;
 	int ret = 0;
 
-	init_parser(&ctx, source, TOK_GAME_TITLE);
+	init_parser(&ctx, "buffer", TOK_GAME_TITLE);
 
 	while (*buf) {
 		/* Scanner */
@@ -353,14 +355,18 @@ int rc_from_textbuf(const char *buf, const char *source, gamelist_t *list, int o
 	return ret;
 }
 
+int rc_write(const gamelist_t *list, FILE *stream)
+{
+	return 0;
+}
+
 /**
- * rc_to_textfile - Writes all codes in a list to a text file.
- * @filename: name of file to write codes to
+ * rc_write_file - Writes all codes in a list to a text file.
  * @list: list with codes
- * @opt: flag CODES_OPT_GID: also write game ids to text file
+ * @filename: name of file to write codes to
  * @return: 0: success, <0: error
  */
-int rc_to_textfile(const char *filename, const gamelist_t *list, int opt)
+int rc_write_file(const gamelist_t *list, const char *filename)
 {
 	FILE *fp;
 	game_t *game;

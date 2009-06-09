@@ -22,8 +22,11 @@ struct readcheats_state {
 /* Options tbc. */
 #define RC_OPT_NONE	0
 
-extern int rc_from_textfile(const char *filename, gamelist_t *list, int opt);
-extern int rc_from_textbuf(const char *buf, const char *source, gamelist_t *list, int opt);
-extern int rc_to_textfile(const char *filename, const gamelist_t *list, int opt);
+extern int rc_read(gamelist_t *list, FILE *stream);
+extern int rc_read_file(gamelist_t *list, const char *filename);
+extern int rc_read_buf(gamelist_t *list, const char *buf);
+
+extern int rc_write(const gamelist_t *list, FILE *stream);
+extern int rc_write_file(const gamelist_t *list, const char *filename);
 
 #endif /* _READCHEATS_H_ */
