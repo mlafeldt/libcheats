@@ -9,6 +9,9 @@
 #define LIBCHEATS_VERSION_MINOR	0
 
 
+#define CHEATS_TRUE		0
+#define CHEATS_FALSE		(-1)
+
 typedef struct {
 	gamelist_t	games;
 	void		(*destructor)(void *);

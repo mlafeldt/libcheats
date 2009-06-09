@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "mytypes.h"
-#include "readcheats.h"
+#include "libcheats.h"
 
 int main(int argc, char *argv[])
 {

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "mystring.h"
 #include "codelist.h"
-#include "readcheats.h"
+#include "libcheats.h"
 #include "dbgprintf.h"
 
 /* Debug stuff */
@@ -297,7 +297,7 @@ void cheats_destroy(cheats_t *cheats)
  */
 int cheats_read(cheats_t *cheats, FILE *stream)
 {
-	return 0;
+	return CHEATS_FALSE;
 }
 
 /**
@@ -312,14 +312,13 @@ int cheats_read_file(cheats_t *cheats, const char *filename)
 	parser_ctx_t ctx;
 	char line[LINE_MAX + 1];
 	int nl = 1;
-	int ret = 0;
 
 	if (cheats == NULL || filename == NULL)
-		return -1;
+		return CHEATS_FALSE;
 
 	fp = fopen(filename, "r");
 	if (fp == NULL)
-		return -1;
+		return CHEATS_FALSE;
 
 	init_parser(&ctx, filename, TOK_GAME_TITLE);
 
@@ -330,15 +329,17 @@ int cheats_read_file(cheats_t *cheats, const char *filename)
 			trim_str(line);
 			if (strlen(line) > 0) {
 				/* Parser */
-				ret = parse_line(line, nl, &ctx, &cheats->games);
-				if (ret < 0) break; /* return on error */
+				if (parse_line(line, nl, &ctx, &cheats->games) < 0) {
+					fclose(fp);
+					return CHEATS_FALSE;
+				}
 			}
 		}
 		nl++;
 	}
 
 	fclose(fp);
-	return ret;
+	return CHEATS_TRUE;
 }
 
 /**
@@ -352,10 +353,9 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
 	parser_ctx_t ctx;
 	char line[LINE_MAX + 1];
 	int nl = 1;
-	int ret = 0;
 
 	if (cheats == NULL || buf == NULL)
-		return -1;
+		return CHEATS_FALSE;
 
 	init_parser(&ctx, "buffer", TOK_GAME_TITLE);
 
@@ -376,15 +376,15 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
 			trim_str(line);
 			if (strlen(line) > 0) {
 				/* Parser */
-				ret = parse_line(line, nl, &ctx, &cheats->games);
-				if (ret < 0) break; /* return on error */
+				if (parse_line(line, nl, &ctx, &cheats->games) < 0)
+					return CHEATS_FALSE;
 			}
 		}
 		nl++;
 		buf += len + 1;
 	}
 
-	return ret;
+	return CHEATS_TRUE;
 }
 
 /**
@@ -395,7 +395,7 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
  */
 int cheats_write(const cheats_t *cheats, FILE *stream)
 {
-	return 0;
+	return CHEATS_FALSE;
 }
 
 /**
@@ -412,11 +412,11 @@ int cheats_write_file(const cheats_t *cheats, const char *filename)
 	code_t *code;
 
 	if (cheats == NULL || filename == NULL)
-		return -1;
+		return CHEATS_FALSE;
 
 	fp = fopen(filename, "w");
 	if (fp == NULL)
-		return -1;
+		return CHEATS_FALSE;
 
 	for (game = cheats->games.head; game != NULL; game = game->next) {
 		fprintf(fp, "\"%s\"\n", game->title);
@@ -430,5 +430,5 @@ int cheats_write_file(const cheats_t *cheats, const char *filename)
 	}
 
 	fclose(fp);
-	return 0;
+	return CHEATS_TRUE;
 }
