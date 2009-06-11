@@ -4,12 +4,6 @@
 #include <string.h>
 #include "codelist.h"
 
-#ifdef _MEMPOOL
-	/* TODO */
-#else
-	#define LIST_FREE(l, i)	list_free(l);
-#endif /*_MEMPOOL*/
-
 /**
  * cl_free - Removes all games, cheats, and codes from a game list and frees the
  * used memory.
@@ -26,13 +20,13 @@ void cl_free(gamelist_t *list)
 	for (game = list->head; game != NULL; game = game->next) {
 		for (cheat = game->cheats.head; cheat != NULL; cheat = cheat->next) {
 			/* Free all codes per cheat */
-			LIST_FREE(&cheat->codes, g_code_pl);
+			list_free(&cheat->codes);
 		}
 		/* Free all cheats per game */
-		LIST_FREE(&game->cheats, g_cheat_pl);
+		list_free(&game->cheats);
 	}
 	/* Free all games */
-	LIST_FREE(list, g_game_pl);
+	list_free(list);
 }
 
 /**
@@ -44,11 +38,8 @@ void cl_free(gamelist_t *list)
  */
 game_t *mkgame(const char *title, const cheatlist_t *cheats, u32 tag)
 {
-#ifdef _MEMPOOL
-	/* TODO */
-#else
 	game_t *game = (game_t*)calloc(1, sizeof(game_t));
-#endif
+
 	if (game != NULL) {
 		if (title != NULL)
 			strncpy(game->title, title, CL_TITLE_MAX);
@@ -69,11 +60,8 @@ game_t *mkgame(const char *title, const cheatlist_t *cheats, u32 tag)
  */
 cheat_t *mkcheat(const char *desc, const codelist_t *codes, u32 tag)
 {
-#ifdef _MEMPOOL
-	/* TODO */
-#else
 	cheat_t *cheat = (cheat_t*)calloc(1, sizeof(cheat_t));
-#endif
+
 	if (cheat != NULL) {
 		if (desc != NULL)
 			strncpy(cheat->desc, desc, CL_DESC_MAX);
@@ -94,11 +82,8 @@ cheat_t *mkcheat(const char *desc, const codelist_t *codes, u32 tag)
  */
 code_t *mkcode(u32 addr, u32 val, u32 tag)
 {
-#ifdef _MEMPOOL
-	/* TODO */
-#else
 	code_t *code = (code_t*)calloc(1, sizeof(code_t));
-#endif
+
 	if (code != NULL) {
 		code->addr = addr;
 		code->val = val;

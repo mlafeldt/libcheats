@@ -179,7 +179,6 @@ static code_t *get_code(const char *s)
 
 /**
  * parser_ctx_t - parser context
- * @source: source of codes, e.g. filename
  * @top: token at the top of each game, see TOK_* flags
  * @next: next expected token(s), see TOK_* flags
  * @game: ptr to current game
@@ -187,7 +186,6 @@ static code_t *get_code(const char *s)
  * @code: ptr to current code
  */
 typedef struct _parser_ctx {
-	const char *source;
 	int top;
 	int next;
 	game_t *game;
@@ -199,10 +197,9 @@ typedef struct _parser_ctx {
  * init_parser - Initialize the parser's context.  Must be called each time
  * before a file is parsed.
  */
-static void init_parser(parser_ctx_t *ctx, const char *source, int top)
+static void init_parser(parser_ctx_t *ctx, int top)
 {
 	if (ctx != NULL) {
-		ctx->source = source;
 		ctx->top = top;
 		ctx->next = top;
 		ctx->game = NULL;
@@ -214,27 +211,37 @@ static void init_parser(parser_ctx_t *ctx, const char *source, int top)
 /*
  * parse_err - Print out information about a parse error.
  */
-static int parse_err(const parser_ctx_t *ctx, int nl, const char *msg, ...)
+static int parse_err(cheats_t *cheats, int nl, const char *msg, ...)
 {
 	va_list ap;
 
-	printf("%s:%i: error: ", ctx->source, nl);
+	if (cheats == NULL || msg == NULL)
+		return -1;
+
 	va_start(ap, msg);
-	vprintf(msg, ap);
+	vsprintf(cheats->error_text, msg, ap);
 	va_end(ap);
 
-	return -1;
+	cheats->error_line = nl;
+
+	D_PRINTF("%s:%i: error: %s\n", cheats->source, nl, cheats->error_text);
+
+	return 0;
 }
 
 /*
- * parse_line - Parse the current line and add the found token.
+ * parse_line - Parse the current line and process the found token.
  */
-static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *list)
+static int parse_line(const char *line, int nl, parser_ctx_t *ctx, cheats_t *cheats)
 {
-	int tok = get_token(line, ctx->top);
-#ifdef _DBG_TOK
+	int tok;
+
+	if (line == NULL || ctx == NULL || cheats == NULL)
+		return -1;
+
+	tok = get_token(line, ctx->top);
 	D_PRINTF("%4i  %i  %s\n", nl, tok, line);
-#endif
+
 	/*
 	 * Check if current token is expected; makes sure that the list
 	 * operations succeed.
@@ -247,39 +254,45 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 			x = TOK_CHEAT_DESC;
 		else if (ctx->next & TOK_GAME_TITLE)
 			x = TOK_GAME_TITLE;
-		return parse_err(ctx, nl, "%s invalid here; %s expected\n",
+		parse_err(cheats, nl, "%s invalid here; %s expected",
 			tok2str(tok), tok2str(x));
+		return -1;
 	}
 
 	/* Process actual token and add it to the list it belongs to. */
 	switch (tok) {
 	case TOK_GAME_TITLE:
 		ctx->game = get_game(line);
-		if (ctx->game == NULL)
-			return parse_err(ctx, nl, "mem alloc failure in get_game()\n");
-		cl_add(list, ctx->game);
+		if (ctx->game == NULL) {
+			parse_err(cheats, nl, "mem alloc failure in get_game()");
+			return -1;
+		}
+		cl_add(&cheats->games, ctx->game);
 		break;
 
 	case TOK_CHEAT_DESC:
 		ctx->cheat = get_cheat(line);
-		if (ctx->cheat == NULL)
-			return parse_err(ctx, nl, "mem alloc failure in get_cheat()\n");
+		if (ctx->cheat == NULL) {
+			parse_err(cheats, nl, "mem alloc failure in get_cheat()");
+			return -1;
+		}
 		cl_add(&ctx->game->cheats, ctx->cheat);
 		break;
 
 	case TOK_CHEAT_CODE:
 		ctx->code = get_code(line);
-		if (ctx->code == NULL)
-			return parse_err(ctx, nl, "mem alloc failure in get_code()\n");
+		if (ctx->code == NULL) {
+			parse_err(cheats, nl, "mem alloc failure in get_code()");
+			return -1;
+		}
 		cl_add(&ctx->cheat->codes, ctx->code);
 		break;
 	}
 
 	ctx->next = next_token(tok, ctx->top);
+
 	return 0;
 }
-
-
 
 /**
  * cheats_init - Initialize a cheats object.
@@ -336,7 +349,8 @@ int cheats_read_file(cheats_t *cheats, const char *filename)
 	if (fp == NULL)
 		return CHEATS_FALSE;
 
-	init_parser(&ctx, filename, TOK_GAME_TITLE);
+	strcpy(cheats->source, filename);
+	init_parser(&ctx, TOK_GAME_TITLE);
 
 	while (fgets(line, sizeof(line), fp) != NULL) { /* Scanner */
 		if (!is_empty_str(line)) {
@@ -345,7 +359,7 @@ int cheats_read_file(cheats_t *cheats, const char *filename)
 			trim_str(line);
 			if (strlen(line) > 0) {
 				/* Parser */
-				if (parse_line(line, nl, &ctx, &cheats->games) < 0) {
+				if (parse_line(line, nl, &ctx, cheats) < 0) {
 					fclose(fp);
 					return CHEATS_FALSE;
 				}
@@ -373,7 +387,8 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
 	if (cheats == NULL || buf == NULL)
 		return CHEATS_FALSE;
 
-	init_parser(&ctx, "buffer", TOK_GAME_TITLE);
+	strcpy(cheats->source, "-");
+	init_parser(&ctx, TOK_GAME_TITLE);
 
 	while (*buf) {
 		/* Scanner */
@@ -392,7 +407,7 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
 			trim_str(line);
 			if (strlen(line) > 0) {
 				/* Parser */
-				if (parse_line(line, nl, &ctx, &cheats->games) < 0)
+				if (parse_line(line, nl, &ctx, cheats) < 0)
 					return CHEATS_FALSE;
 			}
 		}
@@ -458,7 +473,10 @@ int cheats_write_file(const cheats_t *cheats, const char *filename)
 
 const char *cheats_error_text(const cheats_t *cheats)
 {
-	return NULL;
+	if (cheats == NULL)
+		return NULL;
+
+	return cheats->error_text;
 }
 
 int cheats_error_line(const cheats_t *cheats)

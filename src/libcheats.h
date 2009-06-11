@@ -1,5 +1,5 @@
-#ifndef _READCHEATS_H_
-#define _READCHEATS_H_
+#ifndef _LIBCHEATS_H_
+#define _LIBCHEATS_H_
 
 #include "codelist.h"
 
@@ -8,7 +8,7 @@
 #define LIBCHEATS_VERSION_MAJOR	1
 #define LIBCHEATS_VERSION_MINOR	0
 
-
+/* Return values */
 #define CHEATS_TRUE		0
 #define CHEATS_FALSE		(-1)
 
@@ -16,7 +16,8 @@ typedef struct {
 	gamelist_t	games;
 	void		(*destructor)(void *);
 	int		flags;
-	const char	*error_text;
+	char		source[256];
+	char		error_text[256];
 	int		error_line;
 } cheats_t;
 
@@ -33,4 +34,4 @@ extern int cheats_write_file(const cheats_t *cheats, const char *filename);
 extern const char *cheats_error_text(const cheats_t *cheats);
 extern int cheats_error_line(const cheats_t *cheats);
 
-#endif /* _READCHEATS_H_ */
+#endif /* _LIBCHEATS_H_ */

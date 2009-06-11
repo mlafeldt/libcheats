@@ -3,22 +3,22 @@
  *
  * Based on <http://www.c.happycodings.com/Data_Structures/code3.html>
  *
- * Copyright (C) 2008-2009 misfire <misfire@xploderfreax.de>
+ * Copyright (C) 2009 misfire <misfire@xploderfreax.de>
  *
- * This file is part of Artemis, the PS2 game debugger.
+ * This file is part of libcheats.
  *
- * Artemis is free software: you can redistribute it and/or modify
+ * libcheats is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Artemis is distributed in the hope that it will be useful,
+ * libcheats is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Artemis.  If not, see <http://www.gnu.org/licenses/>.
+ * along with libcheats.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef _DLLIST_H_
@@ -56,4 +56,4 @@ void *list_remove(void *list, void *node);
 void list_clear(void *list);
 void list_free(void *list);
 
-#endif /*_DLLIST_H_*/
+#endif /* _DLLIST_H_ */

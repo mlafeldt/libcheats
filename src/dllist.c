@@ -3,29 +3,29 @@
  *
  * Based on <http://www.c.happycodings.com/Data_Structures/code3.html>
  *
- * Copyright (C) 2008-2009 misfire <misfire@xploderfreax.de>
+ * Copyright (C) 2009 misfire <misfire@xploderfreax.de>
  *
- * This file is part of Artemis, the PS2 game debugger.
+ * This file is part of libcheats.
  *
- * Artemis is free software: you can redistribute it and/or modify
+ * libcheats is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Artemis is distributed in the hope that it will be useful,
+ * libcheats is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Artemis.  If not, see <http://www.gnu.org/licenses/>.
+ * along with libcheats.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <stdlib.h> /* for NULL and free() */
 #include "dllist.h"
 
 /*
- * list_init - Initializes the list.
+ * list_init - Initialize the list.
  */
 void list_init(void *list)
 {
@@ -36,7 +36,7 @@ void list_init(void *list)
 }
 
 /*
- * list_is_empty - Returns 1 if the list is empty.
+ * list_is_empty - Return non-zero if the list is empty.
  */
 int list_is_empty(const void *list)
 {
@@ -44,7 +44,7 @@ int list_is_empty(const void *list)
 }
 
 /*
- * list_add - Adds a node to the end of the list.
+ * list_add - Add a node to the end of the list.
  */
 void list_add(void *list, void *node)
 {
@@ -64,7 +64,7 @@ void list_add(void *list, void *node)
 }
 
 /*
- * list_insert - Inserts a node after another node.
+ * list_insert - Insert a node after another node.
  */
 void list_insert(void *list, void *node, void *after)
 {
@@ -84,7 +84,7 @@ void list_insert(void *list, void *node, void *after)
 }
 
 /*
- * list_remove - Removes a node from the list.
+ * list_remove - Remove a node from the list.
  * @return: ptr to removed node
  */
 void *list_remove(void *list, void *node)
@@ -106,7 +106,7 @@ void *list_remove(void *list, void *node)
 }
 
 /*
- * list_clear - Clears the list by removing all nodes.
+ * list_clear - Clear the list by removing all nodes.
  */
 void list_clear(void *list)
 {
@@ -117,7 +117,7 @@ void list_clear(void *list)
 }
 
 /*
- * list_free - Removes all nodes from the list and deallocates the used memory.
+ * list_free - Remove all nodes from the list and deallocate the used memory.
  */
 void list_free(void *list)
 {
