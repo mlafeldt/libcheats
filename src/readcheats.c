@@ -13,13 +13,14 @@
 #define CODE_DIGITS	16
 
 /* Tokens used for parsing */
+#define TOK_NO		0
 #define TOK_GAME_TITLE	1
 #define TOK_CHEAT_DESC	2
 #define TOK_CHEAT_CODE	4
 
 
 /*
- * tok2str - Converts a token value to a string.
+ * tok2str - Convert a token value to a string.
  */
 static const char *tok2str(int tok)
 {
@@ -42,15 +43,16 @@ static const char *tok2str(int tok)
 }
 
 /*
- * is_cmt_str - Returns non-zero if @s indicates a comment.
+ * is_cmt_str - Return non-zero if @s indicates a comment.
  */
 static int is_cmt_str(const char *s)
 {
-	return (strlen(s) >= 2 && !strncmp(s, "//", 2)) || (*s == '#');
+	return (s != NULL && strlen(s) >= 2 &&
+		!strncmp(s, "//", 2)) || (*s == '#');
 }
 
 /*
- * is_game_title - Returns non-zero if @s indicates a game title.
+ * is_game_title - Return non-zero if @s indicates a game title.
  *
  * Example: "TimeSplitters PAL"
  */
@@ -67,13 +69,16 @@ static int is_game_title(const char *s)
 }
 
 /*
- * is_cheat_code - Returns non-zero if @s indicates a cheat code.
+ * is_cheat_code - Return non-zero if @s indicates a cheat code.
  *
  * Example: 10B8DAFA 00003F00
  */
 static int is_cheat_code(const char *s)
 {
 	int i = 0;
+
+	if (s == NULL)
+		return 0;
 
 	while (*s) {
 		if (isxdigit(*s)) {
@@ -90,11 +95,13 @@ static int is_cheat_code(const char *s)
 }
 
 /*
- * get_token - Gets the token value TOK_* for string @s.
+ * get_token - Get token value TOK_* for string @s.
  */
 static int get_token(const char *s, int top)
 {
-	if (is_game_title(s))
+	if (s == NULL)
+		return TOK_NO;
+	else if (is_game_title(s))
 		return TOK_GAME_TITLE;
 	else if (is_cheat_code(s))
 		return TOK_CHEAT_CODE;
@@ -103,7 +110,7 @@ static int get_token(const char *s, int top)
 }
 
 /*
- * next_token - Returns the next expected token(s).
+ * next_token - Return next expected token(s).
  */
 static int next_token(int tok, int top)
 {
@@ -114,34 +121,40 @@ static int next_token(int tok, int top)
 	case TOK_CHEAT_CODE:
 		return top | TOK_CHEAT_DESC | TOK_CHEAT_CODE;
 	default:
-		return 0;
+		return TOK_NO;
 	}
 }
 
 /*
- * get_game - Creates a game_t struct from game title.
+ * get_game - Create a game_t struct from a game title.
  */
 static game_t *get_game(const char *title)
 {
 	char buf[CL_TITLE_MAX + 1];
 
+	if (title == NULL)
+		return NULL;
+
 	/* Remove leading and trailing quotes from game title */
 	strncpy(buf, title + 1, strlen(title) - 2);
-	buf[strlen(title) - 2] = 0;
+	buf[strlen(title) - 2] = '\0';
 
 	return mkgame(buf, NULL, 0);
 }
 
 /*
- * get_cheat - Creates a cheat_t struct from a cheat description.
+ * get_cheat - Create a cheat_t struct from a cheat description.
  */
 static cheat_t *get_cheat(const char *desc)
 {
+	if (desc == NULL)
+		return NULL;
+
 	return mkcheat(desc, NULL, 0);
 }
 
 /*
- * get_code - Creates a code_t struct from string @s.
+ * get_code - Create a code_t struct from string @s.
  */
 static code_t *get_code(const char *s)
 {
@@ -149,13 +162,16 @@ static code_t *get_code(const char *s)
 	int i = 0;
 	u32 addr, val;
 
+	if (s == NULL)
+		return NULL;
+
 	while (*s) {
 		if (isxdigit(*s))
 			digits[i++] = *s;
 		s++;
 	}
 
-	sscanf(digits, "%08X%08X", &addr, &val);
+	sscanf(digits, "%08X %08X", &addr, &val);
 
 	return mkcode(addr, val, 0);
 }
@@ -180,7 +196,7 @@ typedef struct _parser_ctx {
 } parser_ctx_t;
 
 /*
- * init_parser - Initializes the parser's context.  Must be called each time
+ * init_parser - Initialize the parser's context.  Must be called each time
  * before a file is parsed.
  */
 static void init_parser(parser_ctx_t *ctx, const char *source, int top)
@@ -196,7 +212,7 @@ static void init_parser(parser_ctx_t *ctx, const char *source, int top)
 }
 
 /*
- * parse_err - Prints out information about a parse error.
+ * parse_err - Print out information about a parse error.
  */
 static int parse_err(const parser_ctx_t *ctx, int nl, const char *msg, ...)
 {
@@ -211,7 +227,7 @@ static int parse_err(const parser_ctx_t *ctx, int nl, const char *msg, ...)
 }
 
 /*
- * parse_line - Parses the current line and adds the found token to the @list.
+ * parse_line - Parse the current line and add the found token.
  */
 static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *list)
 {
@@ -219,7 +235,8 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 #ifdef _DBG_TOK
 	D_PRINTF("%4i  %i  %s\n", nl, tok, line);
 #endif
-	/* Check if current token is expected; makes sure that the list
+	/*
+	 * Check if current token is expected; makes sure that the list
 	 * operations succeed.
 	 */
 	if (!(ctx->next & tok)) {
@@ -394,11 +411,26 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
  */
 int cheats_write(const cheats_t *cheats, FILE *stream)
 {
+	game_t *game;
+	cheat_t *cheat;
+	code_t *code;
+
+	if (cheats == NULL || stream == NULL)
+		return CHEATS_FALSE;
+
+	for (game = cheats->games.head; game != NULL; game = game->next) {
+		fprintf(stream, "\"%s\"\n", game->title);
+		for (cheat = game->cheats.head; cheat != NULL; cheat = cheat->next) {
+			fprintf(stream, "%s\n", cheat->desc);
+			for (code = cheat->codes.head; code != NULL; code = code->next) {
+				fprintf(stream, "%08X %08X\n", code->addr, code->val);
+			}
+		}
+		fprintf(stream, "\n//--------\n\n");
+	}
+
 	return CHEATS_FALSE;
 }
-
-/* Separator inserted between games when writing to text file */
-#define GAME_SEP	"\n//--------\n\n"
 
 /**
  * cheats_write_file - Write cheats to a text file.
@@ -409,9 +441,7 @@ int cheats_write(const cheats_t *cheats, FILE *stream)
 int cheats_write_file(const cheats_t *cheats, const char *filename)
 {
 	FILE *fp;
-	game_t *game;
-	cheat_t *cheat;
-	code_t *code;
+	int ret;
 
 	if (cheats == NULL || filename == NULL)
 		return CHEATS_FALSE;
@@ -420,16 +450,7 @@ int cheats_write_file(const cheats_t *cheats, const char *filename)
 	if (fp == NULL)
 		return CHEATS_FALSE;
 
-	for (game = cheats->games.head; game != NULL; game = game->next) {
-		fprintf(fp, "\"%s\"\n", game->title);
-		for (cheat = game->cheats.head; cheat != NULL; cheat = cheat->next) {
-			fprintf(fp, "%s\n", cheat->desc);
-			for (code = cheat->codes.head; code != NULL; code = code->next) {
-				fprintf(fp, "%08X %08X\n", code->addr, code->val);
-			}
-		}
-		fprintf(fp, GAME_SEP);
-	}
+	ret = cheats_write(cheats, fp);
 
 	fclose(fp);
 	return CHEATS_TRUE;
