@@ -186,22 +186,22 @@ static code_t *get_code(const char *s)
  * @code: ptr to current code
  */
 typedef struct _parser_ctx {
-	int top;
-	int next;
-	game_t *game;
-	cheat_t *cheat;
-	code_t *code;
+	int	top;
+	int	next;
+	game_t	*game;
+	cheat_t	*cheat;
+	code_t	*code;
 } parser_ctx_t;
 
 /*
  * init_parser - Initialize the parser's context.  Must be called each time
  * before a file is parsed.
  */
-static void init_parser(parser_ctx_t *ctx, int top)
+static void init_parser(parser_ctx_t *ctx)
 {
 	if (ctx != NULL) {
-		ctx->top = top;
-		ctx->next = top;
+		ctx->top = TOK_GAME_TITLE;
+		ctx->next = ctx->top;
 		ctx->game = NULL;
 		ctx->cheat = NULL;
 		ctx->code = NULL;
@@ -322,25 +322,50 @@ void cheats_destroy(cheats_t *cheats)
  * cheats_read - Read cheats from a stream.
  * @cheats: cheats
  * @stream: stream to read cheats from
- * @return: 0: success, <0: error
+ * @return: CHEATS_TRUE: success, CHEATS_FALSE: error
  */
 int cheats_read(cheats_t *cheats, FILE *stream)
 {
-	return CHEATS_FALSE;
+	parser_ctx_t ctx;
+	char line[LINE_MAX + 1];
+	int nl = 1;
+
+	if (cheats == NULL || stream == NULL)
+		return CHEATS_FALSE;
+
+	if (!cheats->source[0])
+		strcpy(cheats->source, "-");
+
+	init_parser(&ctx);
+
+	setbuf(stream, NULL);
+
+	while (fgets(line, sizeof(line), stream) != NULL) { /* Scanner */
+		if (!is_empty_str(line)) {
+			/* Screener */
+			term_str(line, is_cmt_str);
+			trim_str(line);
+
+			/* Parser */
+			if (strlen(line) > 0 && parse_line(line, nl, &ctx, cheats) < 0)
+				return CHEATS_FALSE;
+		}
+		nl++;
+	}
+
+	return CHEATS_TRUE;
 }
 
 /**
  * cheats_read_file - Read cheats from a text file.
  * @cheats: cheats
  * @filename: name of file to read cheats from
- * @return: 0: success, <0: error
+ * @return: CHEATS_TRUE: success, CHEATS_FALSE: error
  */
 int cheats_read_file(cheats_t *cheats, const char *filename)
 {
 	FILE *fp;
-	parser_ctx_t ctx;
-	char line[LINE_MAX + 1];
-	int nl = 1;
+	int ret;
 
 	if (cheats == NULL || filename == NULL)
 		return CHEATS_FALSE;
@@ -350,33 +375,17 @@ int cheats_read_file(cheats_t *cheats, const char *filename)
 		return CHEATS_FALSE;
 
 	strcpy(cheats->source, filename);
-	init_parser(&ctx, TOK_GAME_TITLE);
 
-	while (fgets(line, sizeof(line), fp) != NULL) { /* Scanner */
-		if (!is_empty_str(line)) {
-			/* Screener */
-			term_str(line, is_cmt_str);
-			trim_str(line);
-			if (strlen(line) > 0) {
-				/* Parser */
-				if (parse_line(line, nl, &ctx, cheats) < 0) {
-					fclose(fp);
-					return CHEATS_FALSE;
-				}
-			}
-		}
-		nl++;
-	}
-
+	ret = cheats_read(cheats, fp);
 	fclose(fp);
-	return CHEATS_TRUE;
+	return ret;
 }
 
 /**
  * cheats_read_buf - Read cheats from a text buffer.
  * @cheats: cheats
  * @buf: buffer holding text (must be NUL-terminated!)
- * @return: 0: success, <0: error
+ * @return: CHEATS_TRUE: success, CHEATS_FALSE: error
  */
 int cheats_read_buf(cheats_t *cheats, const char *buf)
 {
@@ -388,14 +397,14 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
 		return CHEATS_FALSE;
 
 	strcpy(cheats->source, "-");
-	init_parser(&ctx, TOK_GAME_TITLE);
+	init_parser(&ctx);
 
 	while (*buf) {
 		/* Scanner */
 		int len = chr_idx(buf, LF);
 		if (len < 0)
 			len = strlen(line);
-		if (len > LINE_MAX)
+		else if (len > LINE_MAX)
 			len = LINE_MAX;
 
 		if (!is_empty_substr(buf, len)) {
@@ -405,11 +414,10 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
 			/* Screener */
 			term_str(line, is_cmt_str);
 			trim_str(line);
-			if (strlen(line) > 0) {
-				/* Parser */
-				if (parse_line(line, nl, &ctx, cheats) < 0)
-					return CHEATS_FALSE;
-			}
+
+			/* Parser */
+			if (strlen(line) > 0 && parse_line(line, nl, &ctx, cheats) < 0)
+				return CHEATS_FALSE;
 		}
 		nl++;
 		buf += len + 1;
@@ -422,7 +430,7 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
  * cheats_write - Write cheats to a stream.
  * @cheats: cheats
  * @stream: stream to write cheats to
- * @return: 0: success, <0: error
+ * @return: CHEATS_TRUE: success, CHEATS_FALSE: error
  */
 int cheats_write(const cheats_t *cheats, FILE *stream)
 {
@@ -451,7 +459,7 @@ int cheats_write(const cheats_t *cheats, FILE *stream)
  * cheats_write_file - Write cheats to a text file.
  * @cheats: cheats
  * @filename: name of file to write cheats to
- * @return: 0: success, <0: error
+ * @return: CHEATS_TRUE: success, CHEATS_FALSE: error
  */
 int cheats_write_file(const cheats_t *cheats, const char *filename)
 {
@@ -466,11 +474,15 @@ int cheats_write_file(const cheats_t *cheats, const char *filename)
 		return CHEATS_FALSE;
 
 	ret = cheats_write(cheats, fp);
-
 	fclose(fp);
 	return CHEATS_TRUE;
 }
 
+/**
+ * cheats_error_text - Return the text of the last parse error.
+ * @cheats: cheats
+ * @return: error text
+ */
 const char *cheats_error_text(const cheats_t *cheats)
 {
 	if (cheats == NULL)
@@ -479,6 +491,11 @@ const char *cheats_error_text(const cheats_t *cheats)
 	return cheats->error_text;
 }
 
+/**
+ * cheats_error_line - Return the line number of the last parse error.
+ * @cheats: cheats
+ * @return: line number
+ */
 int cheats_error_line(const cheats_t *cheats)
 {
 	if (cheats == NULL)
