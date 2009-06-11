@@ -4,6 +4,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
 
 SET(CMAKE_C_FLAGS "-O2 -Wall -s")
 
+ADD_DEFINITIONS(-D_DEBUG)
+ADD_DEFINITIONS(-D_DBG_TOK)
+
 SET(SRCS codelist.c readcheats.c dllist.c mystring.c main.c)
 
 ADD_EXECUTABLE(readcheats ${SRCS})

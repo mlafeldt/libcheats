@@ -6,12 +6,7 @@
 #include "libcheats.h"
 #include "dbgprintf.h"
 
-/* Debug stuff */
-/*
-#define _DBG_TOK
-#define _DBG_ID
-*/
-/* Max line length to parse, rest is cut off! */
+/* Max line length to parse */
 #define LINE_MAX	255
 
 /* Number of digits per cheat code */
@@ -22,8 +17,6 @@
 #define TOK_CHEAT_DESC	2
 #define TOK_CHEAT_CODE	4
 
-/* Separator inserted between games when writing to text file */
-#define GAME_SEP	"\n//--------\n\n"
 
 /*
  * tok2str - Converts a token value to a string.
@@ -49,19 +42,32 @@ static const char *tok2str(int tok)
 }
 
 /*
- * is_game_title - Returns 1 if @s indicates a game title.
+ * is_cmt_str - Returns non-zero if @s indicates a comment.
+ */
+static int is_cmt_str(const char *s)
+{
+	return (strlen(s) >= 2 && !strncmp(s, "//", 2)) || (*s == '#');
+}
+
+/*
+ * is_game_title - Returns non-zero if @s indicates a game title.
  *
  * Example: "TimeSplitters PAL"
  */
 static int is_game_title(const char *s)
 {
-	size_t len = strlen(s);
+	size_t len;
 
-	return ((len >= 2) && (*s == '"') && (s[len - 1] == '"'));
+	if (s == NULL)
+		return 0;
+
+	len = strlen(s);
+
+	return ((len > 2) && (*s == '"') && (s[len - 1] == '"'));
 }
 
 /*
- * is_cheat_code - Returns 1 if @s indicates a cheat code.
+ * is_cheat_code - Returns non-zero if @s indicates a cheat code.
  *
  * Example: 10B8DAFA 00003F00
  */
@@ -99,7 +105,7 @@ static int get_token(const char *s, int top)
 /*
  * next_token - Returns the next expected token(s).
  */
-int next_token(int tok, int top)
+static int next_token(int tok, int top)
 {
 	switch (tok) {
 	case TOK_GAME_TITLE:
@@ -154,13 +160,6 @@ static code_t *get_code(const char *s)
 	return mkcode(addr, val, 0);
 }
 
-/*
- * is_cmt_str - Returns 1 if @s indicates a comment.
- */
-static int is_cmt_str(const char *s)
-{
-	return (strlen(s) >= 2 && !strncmp(s, "//", 2)) || (*s == '#');
-}
 
 /**
  * parser_ctx_t - parser context
@@ -218,7 +217,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 {
 	int tok = get_token(line, ctx->top);
 #ifdef _DBG_TOK
-	D_PRINTF("(%i) %i %s\n", nl, tok, line);
+	D_PRINTF("%4i  %i  %s\n", nl, tok, line);
 #endif
 	/* Check if current token is expected; makes sure that the list
 	 * operations succeed.
@@ -398,6 +397,9 @@ int cheats_write(const cheats_t *cheats, FILE *stream)
 	return CHEATS_FALSE;
 }
 
+/* Separator inserted between games when writing to text file */
+#define GAME_SEP	"\n//--------\n\n"
+
 /**
  * cheats_write_file - Write cheats to a text file.
  * @cheats: cheats
@@ -431,4 +433,17 @@ int cheats_write_file(const cheats_t *cheats, const char *filename)
 
 	fclose(fp);
 	return CHEATS_TRUE;
+}
+
+const char *cheats_error_text(const cheats_t *cheats)
+{
+	return NULL;
+}
+
+int cheats_error_line(const cheats_t *cheats)
+{
+	if (cheats == NULL)
+		return -1;
+
+	return cheats->error_line;
 }
