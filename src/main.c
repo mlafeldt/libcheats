@@ -22,8 +22,9 @@ int main(int argc, char *argv[])
 
 	cheats_init(&cheats);
 
-	if (cheats_read_file(&cheats, argv[1]) != CHEATS_TRUE)
-		printf("%s:%i: error: %s\n", cheats.source, cheats.error_line, cheats.error_text);
+	if (cheats_read_file(&cheats, argv[1]) != CHEATS_TRUE) {
+		printf("source: %s\nline: %i\nerror: %s\n", cheats.source, cheats.error_line, cheats.error_text);
+	}
 
 //	cheats_read_buf(&cheats, text);
 //	cheats_read(&cheats, stdin);

@@ -254,7 +254,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, cheats_t *che
 			x = TOK_CHEAT_DESC;
 		else if (ctx->next & TOK_GAME_TITLE)
 			x = TOK_GAME_TITLE;
-		parse_err(cheats, nl, "%s invalid here; %s expected",
+		parse_err(cheats, nl, "parse error: %s invalid here; %s expected",
 			tok2str(tok), tok2str(x));
 		return -1;
 	}
@@ -371,8 +371,10 @@ int cheats_read_file(cheats_t *cheats, const char *filename)
 		return CHEATS_FALSE;
 
 	fp = fopen(filename, "r");
-	if (fp == NULL)
+	if (fp == NULL) {
+		sprintf(cheats->error_text, "could not open input file %s", filename);
 		return CHEATS_FALSE;
+	}
 
 	strcpy(cheats->source, filename);
 
@@ -432,7 +434,7 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
  * @stream: stream to write cheats to
  * @return: CHEATS_TRUE: success, CHEATS_FALSE: error
  */
-int cheats_write(const cheats_t *cheats, FILE *stream)
+int cheats_write(cheats_t *cheats, FILE *stream)
 {
 	game_t *game;
 	cheat_t *cheat;
@@ -461,7 +463,7 @@ int cheats_write(const cheats_t *cheats, FILE *stream)
  * @filename: name of file to write cheats to
  * @return: CHEATS_TRUE: success, CHEATS_FALSE: error
  */
-int cheats_write_file(const cheats_t *cheats, const char *filename)
+int cheats_write_file(cheats_t *cheats, const char *filename)
 {
 	FILE *fp;
 	int ret;
@@ -470,8 +472,10 @@ int cheats_write_file(const cheats_t *cheats, const char *filename)
 		return CHEATS_FALSE;
 
 	fp = fopen(filename, "w");
-	if (fp == NULL)
+	if (fp == NULL) {
+		sprintf(cheats->error_text, "could not open output file %s", filename);
 		return CHEATS_FALSE;
+	}
 
 	ret = cheats_write(cheats, fp);
 	fclose(fp);

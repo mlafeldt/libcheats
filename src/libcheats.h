@@ -28,8 +28,8 @@ extern int cheats_read(cheats_t *cheats, FILE *stream);
 extern int cheats_read_file(cheats_t *cheats, const char *filename);
 extern int cheats_read_buf(cheats_t *cheats, const char *buf);
 
-extern int cheats_write(const cheats_t *cheats, FILE *stream);
-extern int cheats_write_file(const cheats_t *cheats, const char *filename);
+extern int cheats_write(cheats_t *cheats, FILE *stream);
+extern int cheats_write_file(cheats_t *cheats, const char *filename);
 
 extern const char *cheats_error_text(const cheats_t *cheats);
 extern int cheats_error_line(const cheats_t *cheats);
