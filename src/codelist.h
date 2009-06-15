@@ -87,18 +87,14 @@ typedef struct _gamelist {
 	game_t *tail;
 } gamelist_t;
 
-#ifdef _MEMPOOL
-	/* TODO */
-#endif
-void cl_free(gamelist_t *list);
 
-game_t *mkgame(const char *title, const cheatlist_t *cheats, u32 tag);
-cheat_t *mkcheat(const char *desc, const codelist_t *codes, u32 tag);
-code_t *mkcode(u32 addr, u32 val, u32 tag);
+game_t *build_game(const char *title, const cheatlist_t *cheats, u32 tag);
+cheat_t *build_cheat(const char *desc, const codelist_t *codes, u32 tag);
+code_t *build_code(u32 addr, u32 val, u32 tag);
 
 game_t *cl_find_game_by_title(const char *title, const gamelist_t *list);
 
-void cl_print(const gamelist_t *list);
+void cl_free(gamelist_t *list);
 
 /* Aliases for uniform interface */
 #define cl_init		list_init
@@ -108,4 +104,4 @@ void cl_print(const gamelist_t *list);
 #define cl_remove	list_remove
 #define cl_clear	list_clear
 
-#endif /*_CODELIST_H_*/
+#endif /* _CODELIST_H_ */
