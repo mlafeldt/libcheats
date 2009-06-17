@@ -12,10 +12,15 @@
 #define CHEATS_TRUE		0
 #define CHEATS_FALSE		(-1)
 
+/**
+ * cheats_t - cheats object
+ * @game:
+ * @source:
+ * @error_text:
+ * @error_line:
+ */
 typedef struct _cheats {
 	gamelist_t	games;
-	void		(*destructor)(void *);
-	int		flags;
 	char		source[256];
 	char		error_text[256];
 	int		error_line;
@@ -34,6 +39,10 @@ extern int cheats_write_file(cheats_t *cheats, const char *filename);
 extern const char *cheats_error_text(const cheats_t *cheats);
 extern int cheats_error_line(const cheats_t *cheats);
 
-extern game_t *cheats_lookup(const cheats_t *cheats, const char *title);
+extern game_t *cheats_find_game(const cheats_t *cheats, const char *title);
+
+extern game_t *cheats_add_game(cheats_t *cheats, const game_t *game);
+
+extern int cheats_remove_game(cheats_t *cheats, const game_t *game);
 
 #endif /* _LIBCHEATS_H_ */

@@ -96,12 +96,4 @@ game_t *cl_find_game_by_title(const char *title, const gamelist_t *list);
 
 void cl_free(gamelist_t *list);
 
-/* Aliases for uniform interface */
-#define cl_init		list_init
-#define cl_is_empty	list_is_empty
-#define cl_add		list_add
-#define cl_insert	list_insert
-#define cl_remove	list_remove
-#define cl_clear	list_clear
-
 #endif /* _CODELIST_H_ */

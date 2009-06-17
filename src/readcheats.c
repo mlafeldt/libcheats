@@ -267,7 +267,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, cheats_t *che
 			parse_err(cheats, nl, "mem alloc failure in get_game()");
 			return -1;
 		}
-		cl_add(&cheats->games, ctx->game);
+		list_add(&cheats->games, ctx->game);
 		break;
 
 	case TOK_CHEAT_DESC:
@@ -276,7 +276,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, cheats_t *che
 			parse_err(cheats, nl, "mem alloc failure in get_cheat()");
 			return -1;
 		}
-		cl_add(&ctx->game->cheats, ctx->cheat);
+		list_add(&ctx->game->cheats, ctx->cheat);
 		break;
 
 	case TOK_CHEAT_CODE:
@@ -285,7 +285,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, cheats_t *che
 			parse_err(cheats, nl, "mem alloc failure in get_code()");
 			return -1;
 		}
-		cl_add(&ctx->cheat->codes, ctx->code);
+		list_add(&ctx->cheat->codes, ctx->code);
 		break;
 	}
 
@@ -302,7 +302,7 @@ void cheats_init(cheats_t *cheats)
 {
 	if (cheats != NULL) {
 		memset(cheats, 0, sizeof(cheats_t));
-		cl_init(&cheats->games);
+		list_init(&cheats->games);
 	}
 }
 
