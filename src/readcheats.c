@@ -24,9 +24,36 @@
 #include <stdlib.h>
 #include "mystring.h"
 #include "cheatlist.h"
-#include "libcheats.h"
 #include "readcheats.h"
 #include "dbgprintf.h"
+
+/* Max line length to parse */
+#define LINE_MAX	255
+
+/* Number of digits per cheat code */
+#define CODE_DIGITS	16
+
+/* Tokens used for parsing */
+#define TOK_NO		0
+#define TOK_GAME_TITLE	1
+#define TOK_CHEAT_DESC	2
+#define TOK_CHEAT_CODE	4
+
+/**
+ * parser_ctx_t - parser context
+ * @top: token at the top of each game, see TOK_* flags
+ * @next: next expected token(s), see TOK_* flags
+ * @game: ptr to current game
+ * @cheat: ptr to current cheat
+ * @code: ptr to current code
+ */
+typedef struct _parser_ctx {
+	int	top;
+	int	next;
+	game_t	*game;
+	cheat_t	*cheat;
+	code_t	*code;
+} parser_ctx_t;
 
 /*
  * tok2str - Convert a token value to a string.
@@ -49,6 +76,15 @@ static const char *tok2str(int tok)
 	default:
 		return NULL;
 	}
+}
+
+/*
+ * is_cmt_str - Return non-zero if @s indicates a comment.
+ */
+static int is_cmt_str(const char *s)
+{
+	return (s != NULL && strlen(s) >= 2 &&
+		!strncmp(s, "//", 2)) || (*s == '#');
 }
 
 /*
@@ -180,7 +216,7 @@ static code_t *get_code(const char *s)
  * init_parser - Initialize the parser's context.  Must be called each time
  * before a file is parsed.
  */
-void init_parser(parser_ctx_t *ctx)
+static void init_parser(parser_ctx_t *ctx)
 {
 	if (ctx != NULL) {
 		ctx->top = TOK_GAME_TITLE;
@@ -215,7 +251,7 @@ static int parse_err(cheats_t *cheats, int nl, const char *msg, ...)
 /*
  * parse_line - Parse the current line and process the found token.
  */
-int parse_line(const char *line, int nl, parser_ctx_t *ctx, cheats_t *cheats)
+static int parse_line(const char *line, int nl, parser_ctx_t *ctx, cheats_t *cheats)
 {
 	int tok;
 
@@ -273,6 +309,83 @@ int parse_line(const char *line, int nl, parser_ctx_t *ctx, cheats_t *cheats)
 	}
 
 	ctx->next = next_token(tok, ctx->top);
+
+	return 0;
+}
+
+/**
+ * parse_stream - Parse a stream for cheats.
+ * @cheats: cheats
+ * @stream: stream to read cheats from
+ * @return: 0: success, -1: error
+ */
+int parse_stream(cheats_t *cheats, FILE *stream)
+{
+	parser_ctx_t ctx;
+	char line[LINE_MAX + 1];
+	int nl = 1;
+
+	if (cheats == NULL || stream == NULL)
+		return -1;
+
+	init_parser(&ctx);
+
+	while (fgets(line, sizeof(line), stream) != NULL) { /* Scanner */
+		if (!is_empty_str(line)) {
+			/* Screener */
+			term_str(line, is_cmt_str);
+			trim_str(line);
+
+			/* Parser */
+			if (strlen(line) > 0 && parse_line(line, nl, &ctx, cheats) < 0)
+				return -1;
+		}
+		nl++;
+	}
+
+	return 0;
+}
+
+/**
+ * parse_buf - Parse a text buffer for cheats.
+ * @cheats: cheats
+ * @buf: buffer holding text (must be NUL-terminated!)
+ * @return: 0: success, -1: error
+ */
+int parse_buf(cheats_t *cheats, const char *buf)
+{
+	parser_ctx_t ctx;
+	char line[LINE_MAX + 1];
+	int nl = 1;
+
+	if (cheats == NULL || buf == NULL)
+		return -1;
+
+	init_parser(&ctx);
+
+	while (*buf) {
+		/* Scanner */
+		int len = chr_idx(buf, LF);
+		if (len < 0)
+			len = strlen(line);
+		else if (len > LINE_MAX)
+			len = LINE_MAX;
+
+		if (!is_empty_substr(buf, len)) {
+			strncpy(line, buf, len);
+			line[len] = NUL;
+
+			/* Screener */
+			term_str(line, is_cmt_str);
+			trim_str(line);
+
+			/* Parser */
+			if (strlen(line) > 0 && parse_line(line, nl, &ctx, cheats) < 0)
+				return -1;
+		}
+		nl++;
+		buf += len + 1;
+	}
 
 	return 0;
 }

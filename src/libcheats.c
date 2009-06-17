@@ -1,3 +1,25 @@
+/*
+ * libcheats.c - Library for reading, manipulating, and writing cheat codes in
+ * text format
+ *
+ * Copyright (C) 2009 misfire <misfire@xploderfreax.de>
+ *
+ * This file is part of libcheats.
+ *
+ * libcheats is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libcheats is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with libcheats.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,15 +53,6 @@ void cheats_destroy(cheats_t *cheats)
 	}
 }
 
-/*
- * is_cmt_str - Return non-zero if @s indicates a comment.
- */
-static int is_cmt_str(const char *s)
-{
-	return (s != NULL && strlen(s) >= 2 &&
-		!strncmp(s, "//", 2)) || (*s == '#');
-}
-
 /**
  * cheats_read - Read cheats from a stream.
  * @cheats: cheats
@@ -48,34 +61,15 @@ static int is_cmt_str(const char *s)
  */
 int cheats_read(cheats_t *cheats, FILE *stream)
 {
-	parser_ctx_t ctx;
-	char line[LINE_MAX + 1];
-	int nl = 1;
-
 	if (cheats == NULL || stream == NULL)
 		return CHEATS_FALSE;
 
 	if (!cheats->source[0])
 		strcpy(cheats->source, "-");
 
-	init_parser(&ctx);
-
 	setbuf(stream, NULL);
 
-	while (fgets(line, sizeof(line), stream) != NULL) { /* Scanner */
-		if (!is_empty_str(line)) {
-			/* Screener */
-			term_str(line, is_cmt_str);
-			trim_str(line);
-
-			/* Parser */
-			if (strlen(line) > 0 && parse_line(line, nl, &ctx, cheats) < 0)
-				return CHEATS_FALSE;
-		}
-		nl++;
-	}
-
-	return CHEATS_TRUE;
+	return parse_stream(cheats, stream) < 0 ? CHEATS_FALSE : CHEATS_TRUE;
 }
 
 /**
@@ -113,41 +107,12 @@ int cheats_read_file(cheats_t *cheats, const char *filename)
  */
 int cheats_read_buf(cheats_t *cheats, const char *buf)
 {
-	parser_ctx_t ctx;
-	char line[LINE_MAX + 1];
-	int nl = 1;
-
 	if (cheats == NULL || buf == NULL)
 		return CHEATS_FALSE;
 
 	strcpy(cheats->source, "-");
-	init_parser(&ctx);
 
-	while (*buf) {
-		/* Scanner */
-		int len = chr_idx(buf, LF);
-		if (len < 0)
-			len = strlen(line);
-		else if (len > LINE_MAX)
-			len = LINE_MAX;
-
-		if (!is_empty_substr(buf, len)) {
-			strncpy(line, buf, len);
-			line[len] = NUL;
-
-			/* Screener */
-			term_str(line, is_cmt_str);
-			trim_str(line);
-
-			/* Parser */
-			if (strlen(line) > 0 && parse_line(line, nl, &ctx, cheats) < 0)
-				return CHEATS_FALSE;
-		}
-		nl++;
-		buf += len + 1;
-	}
-
-	return CHEATS_TRUE;
+	return parse_buf(cheats, buf) < 0 ? CHEATS_FALSE : CHEATS_TRUE;
 }
 
 /**
