@@ -1,7 +1,7 @@
 #ifndef _LIBCHEATS_H_
 #define _LIBCHEATS_H_
 
-#include "codelist.h"
+#include "cheatlist.h"
 
 /* Version information */
 #define LIBCHEATS_VERSION	0x0100	/* libcheats 1.0 */

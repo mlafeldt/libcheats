@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "codelist.h"
+#include "cheatlist.h"
 
 /**
  * build_game - Create a new game object and populate it.

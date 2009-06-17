@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "mystring.h"
-#include "codelist.h"
+#include "cheatlist.h"
 #include "libcheats.h"
 #include "dbgprintf.h"
 
