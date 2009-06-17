@@ -10,7 +10,7 @@
 #define CL_DESC_MAX	127
 
 /**
- * code_t - structure to hold a code
+ * code_t - a code object
  * @next: next code in list
  * @prev: previous code in list
  * @addr: code address
@@ -36,7 +36,7 @@ typedef struct _codelist {
 } codelist_t;
 
 /**
- * cheat_t - structure to hold a cheat
+ * cheat_t - a cheat object
  * @next: next cheat in list
  * @prev: previous cheat in list
  * @desc: cheat description
@@ -62,7 +62,7 @@ typedef struct _cheatlist {
 } cheatlist_t;
 
 /**
- * game_t - structure to hold a game
+ * game_t - a game object
  * @next: next game in list
  * @prev: previous game in list
  * @title: game title
@@ -92,8 +92,12 @@ game_t *build_game(const char *title, const cheatlist_t *cheats);
 cheat_t *build_cheat(const char *desc, const codelist_t *codes);
 code_t *build_code(u32 addr, u32 val);
 
-game_t *cl_find_game_by_title(const char *title, const gamelist_t *list);
+void free_codes(codelist_t *list);
+void free_cheats(cheatlist_t *list);
+void free_games(gamelist_t *list);
 
-void cl_free(gamelist_t *list);
+void sort_games(gamelist_t *list);
+
+game_t *find_game_by_title(const char *title, const gamelist_t *list);
 
 #endif /* _CODELIST_H_ */

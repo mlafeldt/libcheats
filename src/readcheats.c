@@ -314,7 +314,7 @@ void cheats_init(cheats_t *cheats)
 void cheats_destroy(cheats_t *cheats)
 {
 	if (cheats != NULL) {
-		cl_free(&cheats->games);
+		free_games(&cheats->games);
 	}
 }
 

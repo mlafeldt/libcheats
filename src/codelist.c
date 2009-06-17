@@ -63,39 +63,66 @@ code_t *build_code(u32 addr, u32 val)
 	return code;
 }
 
-
+/**
+ * free_codes - Free a code list.
+ * @list: list to be freed
+ */
+void free_codes(codelist_t *list)
+{
+	if (list != NULL)
+		list_free(list);
+}
 
 /**
- * cl_free - Free all games, cheats, and codes.
- * @list: game list to be freed
+ * free_cheats - Free a cheat list.
+ * @list: list to be freed
  */
-void cl_free(gamelist_t *list)
+void free_cheats(cheatlist_t *list)
 {
-	game_t *game;
 	cheat_t *cheat;
 
 	if (list == NULL)
 		return;
 
-	for (game = list->head; game != NULL; game = game->next) {
-		for (cheat = game->cheats.head; cheat != NULL; cheat = cheat->next) {
-			/* Free all codes per cheat */
-			list_free(&cheat->codes);
-		}
-		/* Free all cheats per game */
-		list_free(&game->cheats);
-	}
-	/* Free all games */
+	for (cheat = list->head; cheat != NULL; cheat = cheat->next)
+		free_codes(&cheat->codes);
+
 	list_free(list);
 }
 
 /**
- * cl_find_game_by_title - Search a game list for a game with a certain title.
- * @title: game title to search for
- * @list: game list that is searched
+ * free_games - Free a game list.
+ * @list: list to be freed
+ */
+void free_games(gamelist_t *list)
+{
+	game_t *game;
+
+	if (list == NULL)
+		return;
+
+	for (game = list->head; game != NULL; game = game->next)
+		free_cheats(&game->cheats);
+
+	list_free(list);
+}
+
+/**
+ * sort_games - Sort a game list by title.
+ * @list: list to be sorted
+ */
+void sort_games(gamelist_t *list)
+{
+	/* TODO */
+}
+
+/**
+ * find_game_by_title - Search a game list for a game with a certain title.
+ * @title: title to search for
+ * @list: list that is searched
  * @return: ptr to found game object, or NULL if it could not be found
  */
-game_t *cl_find_game_by_title(const char *title, const gamelist_t *list)
+game_t *find_game_by_title(const char *title, const gamelist_t *list)
 {
 	if (title != NULL && list != NULL) {
 		game_t *game = list->head;
@@ -109,15 +136,4 @@ game_t *cl_find_game_by_title(const char *title, const gamelist_t *list)
 
 	return NULL;
 
-}
-
-/**
- * cl_sort - Sort a game list by title.
- * @list: game list to be sorted
- */
-void cl_sort(gamelist_t *list)
-{
-	if (list == NULL)
-		return;
-	/* TODO */
 }
