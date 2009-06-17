@@ -9,4 +9,4 @@
 	#define D_PRINTF(args...)	do {} while (0)
 #endif
 
-#endif /*_DBGPRINTF_H_*/
+#endif /* _DBGPRINTF_H_ */

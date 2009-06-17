@@ -1,5 +1,26 @@
-#ifndef _CODELIST_H_
-#define _CODELIST_H_
+/*
+ * cheatlist.h - Cheat list handling
+ *
+ * Copyright (C) 2009 misfire <misfire@xploderfreax.de>
+ *
+ * This file is part of libcheats.
+ *
+ * libcheats is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libcheats is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with libcheats.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#ifndef _CHEATLIST_H_
+#define _CHEATLIST_H_
 
 #include "mytypes.h"
 #include "dllist.h"
@@ -100,4 +121,4 @@ void sort_games(gamelist_t *list);
 
 game_t *find_game_by_title(const char *title, const gamelist_t *list);
 
-#endif /* _CODELIST_H_ */
+#endif /* _CHEATLIST_H_ */
