@@ -69,7 +69,15 @@ int cheats_read(cheats_t *cheats, FILE *stream)
 
 	setbuf(stream, NULL);
 
-	return parse_stream(&cheats->games, stream) < 0 ? CHEATS_FALSE : CHEATS_TRUE;
+	if (parse_stream(&cheats->games, stream) < 0) {
+		strcpy(cheats->error_text, error_text);
+		cheats->error_line = error_line;
+		return CHEATS_FALSE;
+	} else {
+		cheats->error_text[0] = '\0';
+		cheats->error_line = 0;
+		return CHEATS_TRUE;
+	}
 }
 
 /**
@@ -112,7 +120,15 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
 
 	strcpy(cheats->source, "-");
 
-	return parse_buf(&cheats->games, buf) < 0 ? CHEATS_FALSE : CHEATS_TRUE;
+	if (parse_buf(&cheats->games, buf) < 0) {
+		strcpy(cheats->error_text, error_text);
+		cheats->error_line = error_line;
+		return CHEATS_FALSE;
+	} else {
+		cheats->error_text[0] = '\0';
+		cheats->error_line = 0;
+		return CHEATS_TRUE;
+	}
 }
 
 /**
