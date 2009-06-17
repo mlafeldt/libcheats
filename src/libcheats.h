@@ -23,6 +23,7 @@
 #ifndef _LIBCHEATS_H_
 #define _LIBCHEATS_H_
 
+#include <stdio.h>
 #include "cheatlist.h"
 
 /* Version information */

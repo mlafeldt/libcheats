@@ -6,7 +6,7 @@ SET(CMAKE_C_FLAGS "-O2 -Wall -s")
 
 ADD_DEFINITIONS(-D_DEBUG)
 
-SET(SRCS cheatlist.c mystring.c readcheats.c main.c)
+SET(SRCS cheatlist.c mystring.c readcheats.c libcheats.c main.c)
 
 ADD_EXECUTABLE(readcheats ${SRCS})
 
