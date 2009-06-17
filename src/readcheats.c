@@ -139,7 +139,7 @@ static game_t *get_game(const char *title)
 	strncpy(buf, title + 1, strlen(title) - 2);
 	buf[strlen(title) - 2] = '\0';
 
-	return build_game(buf, NULL, 0);
+	return build_game(buf, NULL);
 }
 
 /*
@@ -150,7 +150,7 @@ static cheat_t *get_cheat(const char *desc)
 	if (desc == NULL)
 		return NULL;
 
-	return build_cheat(desc, NULL, 0);
+	return build_cheat(desc, NULL);
 }
 
 /*
@@ -173,7 +173,7 @@ static code_t *get_code(const char *s)
 
 	sscanf(digits, "%08X %08X", &addr, &val);
 
-	return build_code(addr, val, 0);
+	return build_code(addr, val);
 }
 
 

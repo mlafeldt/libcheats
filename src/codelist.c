@@ -8,10 +8,9 @@
  * build_game - Create a new game object and populate it.
  * @title: game title
  * @cheats: game cheats
- * @tag: arbitrary information
  * @return: ptr to new game object, or NULL on mem alloc error
  */
-game_t *build_game(const char *title, const cheatlist_t *cheats, u32 tag)
+game_t *build_game(const char *title, const cheatlist_t *cheats)
 {
 	game_t *game = (game_t*)calloc(1, sizeof(game_t));
 
@@ -20,7 +19,7 @@ game_t *build_game(const char *title, const cheatlist_t *cheats, u32 tag)
 			strncpy(game->title, title, CL_TITLE_MAX);
 		if (cheats != NULL)
 			game->cheats = *cheats;
-		game->tag = tag;
+		game->tag = 0;
 	}
 
 	return game;
@@ -30,10 +29,9 @@ game_t *build_game(const char *title, const cheatlist_t *cheats, u32 tag)
  * build_cheat - Create a new cheat object and populate it.
  * @desc: cheat description
  * @codes: cheat codes
- * @tag: arbitrary information
  * @return: ptr to new cheat object, or NULL on mem alloc error
  */
-cheat_t *build_cheat(const char *desc, const codelist_t *codes, u32 tag)
+cheat_t *build_cheat(const char *desc, const codelist_t *codes)
 {
 	cheat_t *cheat = (cheat_t*)calloc(1, sizeof(cheat_t));
 
@@ -42,7 +40,7 @@ cheat_t *build_cheat(const char *desc, const codelist_t *codes, u32 tag)
 			strncpy(cheat->desc, desc, CL_DESC_MAX);
 		if (codes != NULL)
 			cheat->codes = *codes;
-		cheat->tag = tag;
+		cheat->tag = 0;
 	}
 
 	return cheat;
@@ -55,14 +53,14 @@ cheat_t *build_cheat(const char *desc, const codelist_t *codes, u32 tag)
  * @tag: arbitrary information
  * @return: ptr to new code object, or NULL on mem alloc error
  */
-code_t *build_code(u32 addr, u32 val, u32 tag)
+code_t *build_code(u32 addr, u32 val)
 {
 	code_t *code = (code_t*)calloc(1, sizeof(code_t));
 
 	if (code != NULL) {
 		code->addr = addr;
 		code->val = val;
-		code->tag = tag;
+		code->tag = 0;
 	}
 
 	return code;
