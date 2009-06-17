@@ -24,8 +24,9 @@
 #include <stdlib.h> /* for NULL and free() */
 #include "dllist.h"
 
-/*
+/**
  * list_init - Initialize the list.
+ * @list: list to be initialized
  */
 void list_init(void *list)
 {
@@ -35,16 +36,20 @@ void list_init(void *list)
 	l->tail = NULL;
 }
 
-/*
- * list_is_empty - Return non-zero if the list is empty.
+/**
+ * list_is_empty - Check if the list is empty.
+ * @list: list
+ * @return: non-zero if list is emtpy
  */
 int list_is_empty(const void *list)
 {
 	return ((list_t*)list)->head == NULL;
 }
 
-/*
+/**
  * list_add - Add a node to the end of the list.
+ * @list: list
+ * @node: node to be added
  */
 void list_add(void *list, void *node)
 {
@@ -63,8 +68,11 @@ void list_add(void *list, void *node)
 	n->next = NULL;
 }
 
-/*
+/**
  * list_insert - Insert a node after another node.
+ * @list: list
+ * @node: node to be inserted
+ * @after: node after which to insert
  */
 void list_insert(void *list, void *node, void *after)
 {
@@ -83,8 +91,10 @@ void list_insert(void *list, void *node, void *after)
 	a->next = n;
 }
 
-/*
+/**
  * list_remove - Remove a node from the list.
+ * @list: list
+ * @node: node to be removed
  * @return: ptr to removed node
  */
 void *list_remove(void *list, void *node)
@@ -105,8 +115,9 @@ void *list_remove(void *list, void *node)
 	return node;
 }
 
-/*
+/**
  * list_clear - Clear the list by removing all nodes.
+ * @list: list to be cleared
  */
 void list_clear(void *list)
 {
@@ -116,8 +127,9 @@ void list_clear(void *list)
 		list_remove(l, l->head);
 }
 
-/*
+/**
  * list_free - Remove all nodes from the list and deallocate the used memory.
+ * @list: list to be freed
  */
 void list_free(void *list)
 {
