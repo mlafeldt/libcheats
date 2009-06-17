@@ -55,6 +55,11 @@ typedef struct _parser_ctx {
 	code_t	*code;
 } parser_ctx_t;
 
+
+char error_text[256];
+int error_line;
+
+
 /*
  * tok2str - Convert a token value to a string.
  */
@@ -230,32 +235,31 @@ static void init_parser(parser_ctx_t *ctx)
 /*
  * parse_err - Print out information about a parse error.
  */
-static int parse_err(cheats_t *cheats, int nl, const char *msg, ...)
+static void parse_err(int nl, const char *msg, ...)
 {
 	va_list ap;
 
-	if (cheats == NULL || msg == NULL)
-		return -1;
+	error_line = nl;
 
-	va_start(ap, msg);
-	vsprintf(cheats->error_text, msg, ap);
-	va_end(ap);
+	if (msg != NULL) {
+		va_start(ap, msg);
+		vsprintf(error_text, msg, ap);
+		va_end(ap);
+	} else {
+		strcpy(error_text, "-");
+	}
 
-	cheats->error_line = nl;
-
-	D_PRINTF("%s:%i: error: %s\n", cheats->source, nl, cheats->error_text);
-
-	return 0;
+	D_PRINTF("%i: error: %s\n", nl, error_text);
 }
 
 /*
  * parse_line - Parse the current line and process the found token.
  */
-static int parse_line(const char *line, int nl, parser_ctx_t *ctx, cheats_t *cheats)
+static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *list)
 {
 	int tok;
 
-	if (line == NULL || ctx == NULL || cheats == NULL)
+	if (line == NULL || ctx == NULL || list == NULL)
 		return -1;
 
 	tok = get_token(line, ctx->top);
@@ -273,7 +277,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, cheats_t *che
 			x = TOK_CHEAT_DESC;
 		else if (ctx->next & TOK_GAME_TITLE)
 			x = TOK_GAME_TITLE;
-		parse_err(cheats, nl, "parse error: %s invalid here; %s expected",
+		parse_err(nl, "parse error: %s invalid here; %s expected",
 			tok2str(tok), tok2str(x));
 		return -1;
 	}
@@ -283,16 +287,16 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, cheats_t *che
 	case TOK_GAME_TITLE:
 		ctx->game = get_game(line);
 		if (ctx->game == NULL) {
-			parse_err(cheats, nl, "mem alloc failure in get_game()");
+			parse_err(nl, "mem alloc failure in get_game()");
 			return -1;
 		}
-		list_add(&cheats->games, ctx->game);
+		list_add(list, ctx->game);
 		break;
 
 	case TOK_CHEAT_DESC:
 		ctx->cheat = get_cheat(line);
 		if (ctx->cheat == NULL) {
-			parse_err(cheats, nl, "mem alloc failure in get_cheat()");
+			parse_err(nl, "mem alloc failure in get_cheat()");
 			return -1;
 		}
 		list_add(&ctx->game->cheats, ctx->cheat);
@@ -301,7 +305,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, cheats_t *che
 	case TOK_CHEAT_CODE:
 		ctx->code = get_code(line);
 		if (ctx->code == NULL) {
-			parse_err(cheats, nl, "mem alloc failure in get_code()");
+			parse_err(nl, "mem alloc failure in get_code()");
 			return -1;
 		}
 		list_add(&ctx->cheat->codes, ctx->code);
@@ -315,17 +319,17 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, cheats_t *che
 
 /**
  * parse_stream - Parse a stream for cheats.
- * @cheats: cheats
+ * @list: list to add cheats to
  * @stream: stream to read cheats from
  * @return: 0: success, -1: error
  */
-int parse_stream(cheats_t *cheats, FILE *stream)
+int parse_stream(gamelist_t *list, FILE *stream)
 {
 	parser_ctx_t ctx;
 	char line[LINE_MAX + 1];
 	int nl = 1;
 
-	if (cheats == NULL || stream == NULL)
+	if (list == NULL || stream == NULL)
 		return -1;
 
 	init_parser(&ctx);
@@ -337,7 +341,7 @@ int parse_stream(cheats_t *cheats, FILE *stream)
 			trim_str(line);
 
 			/* Parser */
-			if (strlen(line) > 0 && parse_line(line, nl, &ctx, cheats) < 0)
+			if (strlen(line) > 0 && parse_line(line, nl, &ctx, list) < 0)
 				return -1;
 		}
 		nl++;
@@ -348,17 +352,17 @@ int parse_stream(cheats_t *cheats, FILE *stream)
 
 /**
  * parse_buf - Parse a text buffer for cheats.
- * @cheats: cheats
+ * @list: list to add cheats to
  * @buf: buffer holding text (must be NUL-terminated!)
  * @return: 0: success, -1: error
  */
-int parse_buf(cheats_t *cheats, const char *buf)
+int parse_buf(gamelist_t *list, const char *buf)
 {
 	parser_ctx_t ctx;
 	char line[LINE_MAX + 1];
 	int nl = 1;
 
-	if (cheats == NULL || buf == NULL)
+	if (list == NULL || buf == NULL)
 		return -1;
 
 	init_parser(&ctx);
@@ -380,7 +384,7 @@ int parse_buf(cheats_t *cheats, const char *buf)
 			trim_str(line);
 
 			/* Parser */
-			if (strlen(line) > 0 && parse_line(line, nl, &ctx, cheats) < 0)
+			if (strlen(line) > 0 && parse_line(line, nl, &ctx, list) < 0)
 				return -1;
 		}
 		nl++;

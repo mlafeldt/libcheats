@@ -23,9 +23,12 @@
 #define _READCHEATS_H_
 
 #include <stdio.h>
-#include "libcheats.h"
+#include "cheatlist.h"
 
-int parse_stream(cheats_t *cheats, FILE *stream);
-int parse_buf(cheats_t *cheats, const char *buf);
+char error_text[256];
+int error_line;
+
+int parse_stream(gamelist_t *list, FILE *stream);
+int parse_buf(gamelist_t *list, const char *buf);
 
 #endif /* _READCHEATS_H_ */

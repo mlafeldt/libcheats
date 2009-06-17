@@ -69,7 +69,7 @@ int cheats_read(cheats_t *cheats, FILE *stream)
 
 	setbuf(stream, NULL);
 
-	return parse_stream(cheats, stream) < 0 ? CHEATS_FALSE : CHEATS_TRUE;
+	return parse_stream(&cheats->games, stream) < 0 ? CHEATS_FALSE : CHEATS_TRUE;
 }
 
 /**
@@ -112,7 +112,7 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
 
 	strcpy(cheats->source, "-");
 
-	return parse_buf(cheats, buf) < 0 ? CHEATS_FALSE : CHEATS_TRUE;
+	return parse_buf(&cheats->games, buf) < 0 ? CHEATS_FALSE : CHEATS_TRUE;
 }
 
 /**
