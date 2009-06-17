@@ -19,7 +19,6 @@ game_t *build_game(const char *title, const cheatlist_t *cheats)
 			strncpy(game->title, title, CL_TITLE_MAX);
 		if (cheats != NULL)
 			game->cheats = *cheats;
-		game->tag = 0;
 	}
 
 	return game;
@@ -40,7 +39,6 @@ cheat_t *build_cheat(const char *desc, const codelist_t *codes)
 			strncpy(cheat->desc, desc, CL_DESC_MAX);
 		if (codes != NULL)
 			cheat->codes = *codes;
-		cheat->tag = 0;
 	}
 
 	return cheat;
@@ -60,7 +58,6 @@ code_t *build_code(u32 addr, u32 val)
 	if (code != NULL) {
 		code->addr = addr;
 		code->val = val;
-		code->tag = 0;
 	}
 
 	return code;
