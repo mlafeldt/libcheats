@@ -8,5 +8,5 @@ TARGET_LINK_LIBRARIES(test_driver cheats)
 
 FOREACH(TEST ${TESTSUITES})
    GET_FILENAME_COMPONENT(NAME ${TEST} NAME_WE)
-   ADD_TEST(${NAME} test_driver ${NAME} ${CMAKE_SOURCE_DIR}/test/cheats.txt)
+   ADD_TEST(${NAME} test_driver ${NAME} ${CMAKE_CURRENT_SOURCE_DIR}/cheats.txt)
 ENDFOREACH(TEST)
