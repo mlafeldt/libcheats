@@ -16,6 +16,8 @@ int test3(int argc, char *argv[])
 	cheats_init(&cheats);
 
 	fp = fopen(argv[1], "r");
+	if (fp == NULL)
+		return -1;
 
 	if (cheats_read(&cheats, fp) != CHEATS_TRUE) {
 		printf("line: %i\nerror: %s\n",
