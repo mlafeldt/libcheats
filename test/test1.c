@@ -3,7 +3,7 @@
  */
 
 #include <stdio.h>
-#include "../src/libcheats.h"
+#include <libcheats.h>
 
 int test1(int argc, char *argv[])
 {

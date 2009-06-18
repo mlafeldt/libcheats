@@ -3,7 +3,7 @@
  */
 
 #include <stdio.h>
-#include "../src/libcheats.h"
+#include <libcheats.h>
 
 static const char *text =
 "\"TimeSplitters 2 Demo PAL\"\n"
