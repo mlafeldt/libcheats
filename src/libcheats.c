@@ -62,9 +62,6 @@ int cheats_read(cheats_t *cheats, FILE *stream)
 	if (cheats == NULL || stream == NULL)
 		return CHEATS_FALSE;
 
-	if (!cheats->source[0])
-		strcpy(cheats->source, "-");
-
 	setbuf(stream, NULL);
 
 	if (parse_stream(&cheats->games, stream) < 0) {
@@ -98,8 +95,6 @@ int cheats_read_file(cheats_t *cheats, const char *filename)
 		return CHEATS_FALSE;
 	}
 
-	strcpy(cheats->source, filename);
-
 	ret = cheats_read(cheats, fp);
 	fclose(fp);
 	return ret;
@@ -115,8 +110,6 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
 {
 	if (cheats == NULL || buf == NULL)
 		return CHEATS_FALSE;
-
-	strcpy(cheats->source, "-");
 
 	if (parse_buf(&cheats->games, buf) < 0) {
 		strcpy(cheats->error_text, parse_error_text);

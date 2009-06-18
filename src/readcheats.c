@@ -245,7 +245,7 @@ static void parse_err(int nl, const char *msg, ...)
 		strcpy(parse_error_text, "-");
 	}
 
-	D_PRINTF("%i: error: %s\n", nl, parse_error_text);
+	D_PRINTF("line %i: %s\n", nl, parse_error_text);
 }
 
 /*

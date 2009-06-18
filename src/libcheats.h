@@ -45,7 +45,6 @@
  */
 typedef struct _cheats {
 	gamelist_t	games;
-	char		source[256];
 	char		error_text[256];
 	int		error_line;
 } cheats_t;
