@@ -22,10 +22,9 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "mystring.h"
 #include "cheatlist.h"
-#include "readcheats.h"
 #include "dbgprintf.h"
+#include "mystring.h"
 
 /* Max line length to parse */
 #define LINE_MAX	255
@@ -55,9 +54,9 @@ typedef struct _parser_ctx {
 	code_t	*code;
 } parser_ctx_t;
 
-
-char error_text[256];
-int error_line;
+/* Information about last error */
+char parse_error_text[256];
+int parse_error_line;
 
 
 /*
@@ -167,7 +166,7 @@ static int next_token(int tok, int top)
 }
 
 /*
- * get_game - Create a game_t struct from a game title.
+ * get_game - Create a game object from a game title.
  */
 static game_t *get_game(const char *title)
 {
@@ -184,18 +183,15 @@ static game_t *get_game(const char *title)
 }
 
 /*
- * get_cheat - Create a cheat_t struct from a cheat description.
+ * get_cheat - Create a cheat object from a cheat description.
  */
 static cheat_t *get_cheat(const char *desc)
 {
-	if (desc == NULL)
-		return NULL;
-
 	return build_cheat(desc, NULL);
 }
 
 /*
- * get_code - Create a code_t struct from string @s.
+ * get_code - Create a code object from string @s.
  */
 static code_t *get_code(const char *s)
 {
@@ -239,17 +235,17 @@ static void parse_err(int nl, const char *msg, ...)
 {
 	va_list ap;
 
-	error_line = nl;
+	parse_error_line = nl;
 
 	if (msg != NULL) {
 		va_start(ap, msg);
-		vsprintf(error_text, msg, ap);
+		vsprintf(parse_error_text, msg, ap);
 		va_end(ap);
 	} else {
-		strcpy(error_text, "-");
+		strcpy(parse_error_text, "-");
 	}
 
-	D_PRINTF("%i: error: %s\n", nl, error_text);
+	D_PRINTF("%i: error: %s\n", nl, parse_error_text);
 }
 
 /*
@@ -318,7 +314,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 }
 
 /**
- * parse_stream - Parse a stream for cheats.
+ * parse_stream - Parse a text stream for cheats.
  * @list: list to add cheats to
  * @stream: stream to read cheats from
  * @return: 0: success, -1: error

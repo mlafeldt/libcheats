@@ -20,14 +20,12 @@
  * along with libcheats.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdarg.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include "mystring.h"
+#include <string.h>
 #include "cheatlist.h"
+#include "dbgprintf.h"
 #include "libcheats.h"
 #include "readcheats.h"
-#include "dbgprintf.h"
 
 /**
  * cheats_init - Initialize a cheats object.
@@ -70,8 +68,8 @@ int cheats_read(cheats_t *cheats, FILE *stream)
 	setbuf(stream, NULL);
 
 	if (parse_stream(&cheats->games, stream) < 0) {
-		strcpy(cheats->error_text, error_text);
-		cheats->error_line = error_line;
+		strcpy(cheats->error_text, parse_error_text);
+		cheats->error_line = parse_error_line;
 		return CHEATS_FALSE;
 	} else {
 		cheats->error_text[0] = '\0';
@@ -121,8 +119,8 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
 	strcpy(cheats->source, "-");
 
 	if (parse_buf(&cheats->games, buf) < 0) {
-		strcpy(cheats->error_text, error_text);
-		cheats->error_line = error_line;
+		strcpy(cheats->error_text, parse_error_text);
+		cheats->error_line = parse_error_line;
 		return CHEATS_FALSE;
 	} else {
 		cheats->error_text[0] = '\0';
