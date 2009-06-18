@@ -5,10 +5,13 @@
 #include <stdio.h>
 #include "libcheats.h"
 
-int main(int argc, char *argv[])
+int test3(int argc, char *argv[])
 {
 	FILE *fp;
 	cheats_t cheats;
+
+	if (argc < 2)
+		return -1;
 
 	cheats_init(&cheats);
 

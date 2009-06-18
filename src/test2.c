@@ -17,7 +17,7 @@ static const char *text =
 "Unlock all Levels\n"
 "20383A30 00000000\n";
 
-int main(int argc, char *argv[])
+int test2(int argc, char *argv[])
 {
 	cheats_t cheats;
 

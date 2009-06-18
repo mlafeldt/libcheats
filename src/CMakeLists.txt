@@ -9,16 +9,15 @@ ADD_DEFINITIONS(-D_DEBUG)
 SET(SRCS mystring.c cheatlist.c readcheats.c libcheats.c)
 ADD_LIBRARY(cheats SHARED ${SRCS})
 
+
 ENABLE_TESTING()
+SET(TESTSUITES test1.c test2.c test3.c)
+CREATE_TEST_SOURCELIST(TESTSRC test_driver.c ${TESTSUITES})
 
-ADD_EXECUTABLE(test1 test1.c)
-TARGET_LINK_LIBRARIES(test1 cheats)
-ADD_TEST(cheats_read_file ${EXECUTABLE_OUTPUT_PATH}/test1 ${CMAKE_SOURCE_DIR}/cheats.txt)
+ADD_EXECUTABLE(test_driver ${TESTSRC})
+TARGET_LINK_LIBRARIES(test_driver cheats)
 
-ADD_EXECUTABLE(test2 test2.c)
-TARGET_LINK_LIBRARIES(test2 cheats)
-ADD_TEST(cheats_read_buf ${EXECUTABLE_OUTPUT_PATH}/test2)
-
-ADD_EXECUTABLE(test3 test3.c)
-TARGET_LINK_LIBRARIES(test3 cheats)
-ADD_TEST(cheats_read ${EXECUTABLE_OUTPUT_PATH}/test3 ${CMAKE_SOURCE_DIR}/cheats.txt)
+FOREACH(TEST ${TESTSUITES})
+   GET_FILENAME_COMPONENT(NAME ${TEST} NAME_WE)
+   ADD_TEST(${NAME} test_driver ${NAME} ${CMAKE_SOURCE_DIR}/cheats.txt)
+ENDFOREACH(TEST)
