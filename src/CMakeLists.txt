@@ -1,4 +1,4 @@
-PROJECT("readcheats" C)
+PROJECT("libcheats" C)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
 
@@ -6,8 +6,10 @@ SET(CMAKE_C_FLAGS "-O2 -Wall -s")
 
 ADD_DEFINITIONS(-D_DEBUG)
 
-SET(SRCS cheatlist.c mystring.c readcheats.c libcheats.c main.c)
+SET(SRCS mystring.c cheatlist.c readcheats.c libcheats.c)
+ADD_LIBRARY(cheats SHARED ${SRCS})
 
-ADD_EXECUTABLE(readcheats ${SRCS})
-
-INSTALL(TARGETS readcheats DESTINATION bin)
+ENABLE_TESTING()
+ADD_EXECUTABLE(test1 test1.c)
+TARGET_LINK_LIBRARIES(test1 cheats)
+ADD_TEST(test1 ${EXECUTABLE_OUTPUT_PATH}/test1)
