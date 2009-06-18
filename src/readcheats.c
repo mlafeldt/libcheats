@@ -177,7 +177,7 @@ static game_t *get_game(const char *title)
 
 	/* Remove leading and trailing quotes from game title */
 	strncpy(buf, title + 1, strlen(title) - 2);
-	buf[strlen(title) - 2] = '\0';
+	buf[strlen(title) - 2] = NUL;
 
 	return build_game(buf, NULL);
 }
@@ -229,7 +229,7 @@ static void init_parser(parser_ctx_t *ctx)
 }
 
 /*
- * parse_err - Print out information about a parse error.
+ * parse_err - Store information about a parse error.
  */
 static void parse_err(int nl, const char *msg, ...)
 {

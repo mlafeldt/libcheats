@@ -109,16 +109,16 @@ typedef struct _gamelist {
 } gamelist_t;
 
 
-game_t *build_game(const char *title, const cheatlist_t *cheats);
-cheat_t *build_cheat(const char *desc, const codelist_t *codes);
-code_t *build_code(u32 addr, u32 val);
+extern game_t *build_game(const char *title, const cheatlist_t *cheats);
+extern cheat_t *build_cheat(const char *desc, const codelist_t *codes);
+extern code_t *build_code(u32 addr, u32 val);
 
-void free_codes(codelist_t *list);
-void free_cheats(cheatlist_t *list);
-void free_games(gamelist_t *list);
+extern void free_codes(codelist_t *list);
+extern void free_cheats(cheatlist_t *list);
+extern void free_games(gamelist_t *list);
 
-void sort_games(gamelist_t *list);
+extern void sort_games(gamelist_t *list);
 
-game_t *find_game_by_title(const char *title, const gamelist_t *list);
+extern game_t *find_game_by_title(const char *title, const gamelist_t *list);
 
 #endif /* _CHEATLIST_H_ */
