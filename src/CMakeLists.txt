@@ -18,3 +18,7 @@ ADD_TEST(cheats_read_file ${EXECUTABLE_OUTPUT_PATH}/test1 ${CMAKE_SOURCE_DIR}/ch
 ADD_EXECUTABLE(test2 test2.c)
 TARGET_LINK_LIBRARIES(test2 cheats)
 ADD_TEST(cheats_read_buf ${EXECUTABLE_OUTPUT_PATH}/test2)
+
+ADD_EXECUTABLE(test3 test3.c)
+TARGET_LINK_LIBRARIES(test3 cheats)
+ADD_TEST(cheats_read ${EXECUTABLE_OUTPUT_PATH}/test3 ${CMAKE_SOURCE_DIR}/cheats.txt)
