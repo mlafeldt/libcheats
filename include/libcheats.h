@@ -38,10 +38,9 @@
 
 /**
  * cheats_t - cheats object
- * @game:
- * @source:
- * @error_text:
- * @error_line:
+ * @games: list of games
+ * @error_text: text of last parse error
+ * @error_line: line no. of last parse error
  */
 typedef struct _cheats {
 	gamelist_t	games;
@@ -61,11 +60,5 @@ extern int cheats_write_file(cheats_t *cheats, const char *filename);
 
 extern const char *cheats_error_text(const cheats_t *cheats);
 extern int cheats_error_line(const cheats_t *cheats);
-
-extern game_t *cheats_find_game(const cheats_t *cheats, const char *title);
-
-extern game_t *cheats_add_game(cheats_t *cheats, const game_t *game);
-
-extern int cheats_remove_game(cheats_t *cheats, const game_t *game);
 
 #endif /* _LIBCHEATS_H_ */

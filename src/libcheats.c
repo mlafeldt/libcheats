@@ -29,7 +29,7 @@
 
 /**
  * cheats_init - Initialize a cheats object.
- * @cheats: cheats
+ * @cheats: cheats object
  */
 void cheats_init(cheats_t *cheats)
 {
@@ -42,7 +42,7 @@ void cheats_init(cheats_t *cheats)
 /**
  * cheats_destroy - Destroy a cheats object, deallocate all memory associated
  * with it, but not including the cheats_t structure itself.
- * @cheats: cheats
+ * @cheats: cheats object
  */
 void cheats_destroy(cheats_t *cheats)
 {
@@ -52,10 +52,13 @@ void cheats_destroy(cheats_t *cheats)
 }
 
 /**
- * cheats_read - Read cheats from a stream.
- * @cheats: cheats
+ * cheats_read - Read and parse cheats from a stream into a cheats object.
+ * @cheats: cheats object
  * @stream: stream to read cheats from
  * @return: CHEATS_TRUE: success, CHEATS_FALSE: error
+ *
+ * The functions cheats_error_text() and cheats_error_line() can be used to
+ * obtain more information about an error.
  */
 int cheats_read(cheats_t *cheats, FILE *stream)
 {
@@ -76,10 +79,13 @@ int cheats_read(cheats_t *cheats, FILE *stream)
 }
 
 /**
- * cheats_read_file - Read cheats from a text file.
- * @cheats: cheats
+ * cheats_read_file - Read and parse cheats from a text file into a cheats object.
+ * @cheats: cheats object
  * @filename: name of file to read cheats from
  * @return: CHEATS_TRUE: success, CHEATS_FALSE: error
+ *
+ * The functions cheats_error_text() and cheats_error_line() can be used to
+ * obtain more information about an error.
  */
 int cheats_read_file(cheats_t *cheats, const char *filename)
 {
@@ -101,10 +107,13 @@ int cheats_read_file(cheats_t *cheats, const char *filename)
 }
 
 /**
- * cheats_read_buf - Read cheats from a text buffer.
- * @cheats: cheats
+ * cheats_read_buf - Read and parse cheats from a text buffer into a cheats object.
+ * @cheats: cheats object
  * @buf: buffer holding text (must be NUL-terminated!)
  * @return: CHEATS_TRUE: success, CHEATS_FALSE: error
+ *
+ * The functions cheats_error_text() and cheats_error_line() can be used to
+ * obtain more information about an error.
  */
 int cheats_read_buf(cheats_t *cheats, const char *buf)
 {
@@ -123,8 +132,8 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
 }
 
 /**
- * cheats_write - Write cheats to a stream.
- * @cheats: cheats
+ * cheats_write - Write cheats from a cheats object to a stream.
+ * @cheats: cheats object
  * @stream: stream to write cheats to
  * @return: CHEATS_TRUE: success, CHEATS_FALSE: error
  */
@@ -148,12 +157,12 @@ int cheats_write(cheats_t *cheats, FILE *stream)
 		fprintf(stream, "\n//--------\n\n");
 	}
 
-	return CHEATS_FALSE;
+	return CHEATS_TRUE;
 }
 
 /**
- * cheats_write_file - Write cheats to a text file.
- * @cheats: cheats
+ * cheats_write_file - Write cheats from a cheats object to a text file.
+ * @cheats: cheats objects
  * @filename: name of file to write cheats to
  * @return: CHEATS_TRUE: success, CHEATS_FALSE: error
  */
@@ -166,19 +175,17 @@ int cheats_write_file(cheats_t *cheats, const char *filename)
 		return CHEATS_FALSE;
 
 	fp = fopen(filename, "w");
-	if (fp == NULL) {
-		sprintf(cheats->error_text, "could not open output file %s", filename);
+	if (fp == NULL)
 		return CHEATS_FALSE;
-	}
 
 	ret = cheats_write(cheats, fp);
 	fclose(fp);
-	return CHEATS_TRUE;
+	return ret;
 }
 
 /**
  * cheats_error_text - Return the text of the last parse error.
- * @cheats: cheats
+ * @cheats: cheats object
  * @return: error text
  */
 const char *cheats_error_text(const cheats_t *cheats)
@@ -191,7 +198,7 @@ const char *cheats_error_text(const cheats_t *cheats)
 
 /**
  * cheats_error_line - Return the line number of the last parse error.
- * @cheats: cheats
+ * @cheats: cheats object
  * @return: line number
  */
 int cheats_error_line(const cheats_t *cheats)
