@@ -48,6 +48,7 @@ void cheats_destroy(cheats_t *cheats)
 {
 	if (cheats != NULL) {
 		free_games(&cheats->games);
+		memset(cheats, 0, sizeof(cheats_t));
 	}
 }
 
@@ -65,7 +66,8 @@ int cheats_read(cheats_t *cheats, FILE *stream)
 	if (cheats == NULL || stream == NULL)
 		return CHEATS_FALSE;
 
-	setbuf(stream, NULL);
+	cheats_destroy(cheats);
+	cheats_init(cheats);
 
 	if (parse_stream(&cheats->games, stream) < 0) {
 		strcpy(cheats->error_text, parse_error_text);
@@ -119,6 +121,9 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
 {
 	if (cheats == NULL || buf == NULL)
 		return CHEATS_FALSE;
+
+	cheats_destroy(cheats);
+	cheats_init(cheats);
 
 	if (parse_buf(&cheats->games, buf) < 0) {
 		strcpy(cheats->error_text, parse_error_text);
@@ -175,8 +180,10 @@ int cheats_write_file(cheats_t *cheats, const char *filename)
 		return CHEATS_FALSE;
 
 	fp = fopen(filename, "w");
-	if (fp == NULL)
+	if (fp == NULL) {
+		sprintf(cheats->error_text, "could not open output file %s", filename);
 		return CHEATS_FALSE;
+	}
 
 	ret = cheats_write(cheats, fp);
 	fclose(fp);
