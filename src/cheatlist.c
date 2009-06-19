@@ -19,7 +19,7 @@
  * along with libcheats.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "mytypes.h"
+#include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -72,7 +72,7 @@ cheat_t *build_cheat(const char *desc, const codelist_t *codes)
  * @tag: arbitrary information
  * @return: ptr to new code object, or NULL on mem alloc error
  */
-code_t *build_code(u32 addr, u32 val)
+code_t *build_code(u_int32_t addr, u_int32_t val)
 {
 	code_t *code = (code_t*)calloc(1, sizeof(code_t));
 

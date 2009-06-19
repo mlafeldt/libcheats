@@ -19,6 +19,7 @@
  * along with libcheats.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <sys/types.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -197,7 +198,7 @@ static code_t *get_code(const char *s)
 {
 	char digits[CODE_DIGITS];
 	int i = 0;
-	u32 addr, val;
+	u_int32_t addr, val;
 
 	if (s == NULL)
 		return NULL;

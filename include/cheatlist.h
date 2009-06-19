@@ -22,7 +22,7 @@
 #ifndef _CHEATLIST_H_
 #define _CHEATLIST_H_
 
-#include "mytypes.h"
+#include <sys/types.h>
 #include "dllist.h"
 
 /* Max game title length */
@@ -41,9 +41,9 @@
 typedef struct _code {
 	struct _code *next;
 	struct _code *prev;
-	u32 addr;
-	u32 val;
-	u32 tag;
+	u_int32_t addr;
+	u_int32_t val;
+	u_int32_t tag;
 } code_t;
 
 /**
@@ -69,7 +69,7 @@ typedef struct _cheat {
 	struct _cheat *prev;
 	char desc[CL_DESC_MAX + 1];
 	codelist_t codes;
-	u32 tag;
+	u_int32_t tag;
 } cheat_t;
 
 /**
@@ -95,7 +95,7 @@ typedef struct _game {
 	struct _game *prev;
 	char title[CL_TITLE_MAX + 1];
 	cheatlist_t cheats;
-	u32 tag;
+	u_int32_t tag;
 } game_t;
 
 /**
@@ -111,7 +111,7 @@ typedef struct _gamelist {
 
 extern game_t *build_game(const char *title, const cheatlist_t *cheats);
 extern cheat_t *build_cheat(const char *desc, const codelist_t *codes);
-extern code_t *build_code(u32 addr, u32 val);
+extern code_t *build_code(u_int32_t addr, u_int32_t val);
 
 extern void free_codes(codelist_t *list);
 extern void free_cheats(cheatlist_t *list);
