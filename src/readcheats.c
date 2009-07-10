@@ -287,7 +287,8 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 			parse_err(nl, "mem alloc failure in get_game()");
 			return -1;
 		}
-		list_add(list, ctx->game);
+		TAILQ_INSERT_TAIL(list, ctx->game, node);
+		TAILQ_INIT(&ctx->game->cheats);
 		break;
 
 	case TOK_CHEAT_DESC:
@@ -296,7 +297,8 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 			parse_err(nl, "mem alloc failure in get_cheat()");
 			return -1;
 		}
-		list_add(&ctx->game->cheats, ctx->cheat);
+		TAILQ_INSERT_TAIL(&ctx->game->cheats, ctx->cheat, node);
+		TAILQ_INIT(&ctx->cheat->codes);
 		break;
 
 	case TOK_CHEAT_CODE:
@@ -305,7 +307,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 			parse_err(nl, "mem alloc failure in get_code()");
 			return -1;
 		}
-		list_add(&ctx->cheat->codes, ctx->code);
+		TAILQ_INSERT_TAIL(&ctx->cheat->codes, ctx->code, node);
 		break;
 	}
 

@@ -90,8 +90,10 @@ code_t *build_code(u_int32_t addr, u_int32_t val)
  */
 void free_codes(codelist_t *list)
 {
+#if 0
 	if (list != NULL)
 		list_free(list);
+#endif
 }
 
 /**
@@ -100,6 +102,7 @@ void free_codes(codelist_t *list)
  */
 void free_cheats(cheatlist_t *list)
 {
+#if 0
 	cheat_t *cheat;
 
 	if (list == NULL)
@@ -109,6 +112,7 @@ void free_cheats(cheatlist_t *list)
 		free_codes(&cheat->codes);
 
 	list_free(list);
+#endif
 }
 
 /**
@@ -117,6 +121,7 @@ void free_cheats(cheatlist_t *list)
  */
 void free_games(gamelist_t *list)
 {
+#if 0
 	game_t *game;
 
 	if (list == NULL)
@@ -126,6 +131,7 @@ void free_games(gamelist_t *list)
 		free_cheats(&game->cheats);
 
 	list_free(list);
+#endif
 }
 
 /**
@@ -145,16 +151,17 @@ void sort_games(gamelist_t *list)
  */
 game_t *find_game_by_title(const char *title, const gamelist_t *list)
 {
+#if 0
 	if (title != NULL && list != NULL) {
-		game_t *game = list->head;
+		game_t *game = list->lh_first;
 
 		while (game != NULL) {
 			if (!strcmp(game->title, title))
 				return game;
-			game = game->next;
+			game = game->node.le_next;
 		}
 	}
 
 	return NULL;
-
+#endif
 }

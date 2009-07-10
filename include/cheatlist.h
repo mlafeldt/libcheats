@@ -23,7 +23,7 @@
 #define _CHEATLIST_H_
 
 #include <sys/types.h>
-#include "dllist.h"
+#include <sys/queue.h>
 
 /* Max game title length */
 #define CL_TITLE_MAX	127
@@ -32,55 +32,42 @@
 
 /**
  * code_t - a code object
- * @next: next code in list
- * @prev: previous code in list
  * @addr: code address
  * @val: code value
  * @tag: arbitrary information
+ * @node:
  */
-typedef struct _code {
-	struct _code *next;
-	struct _code *prev;
+struct code {
 	u_int32_t addr;
 	u_int32_t val;
 	u_int32_t tag;
-} code_t;
 
-/**
- * codelist_t - list of codes
- * @head: head of code list
- * @tail: tail of code list
- */
-typedef struct _codelist {
-	code_t *head;
-	code_t *tail;
-} codelist_t;
+	TAILQ_ENTRY(code) node;
+};
+typedef struct code code_t;
+
+/* struct codelist */
+TAILQ_HEAD(codelist, code);
+typedef struct codelist codelist_t;
 
 /**
  * cheat_t - a cheat object
- * @next: next cheat in list
- * @prev: previous cheat in list
  * @desc: cheat description
  * @codes: cheat codes
  * @tag: arbitrary information
  */
-typedef struct _cheat {
-	struct _cheat *next;
-	struct _cheat *prev;
+struct cheat {
 	char desc[CL_DESC_MAX + 1];
-	codelist_t codes;
+	struct codelist codes;
 	u_int32_t tag;
-} cheat_t;
 
-/**
- * cheatlist_t - list of cheats
- * @head: head of cheat list
- * @tail: tail of cheat list
- */
-typedef struct _cheatlist {
-	cheat_t *head;
-	cheat_t *tail;
-} cheatlist_t;
+	TAILQ_ENTRY(cheat) node;
+};
+typedef struct cheat cheat_t;
+
+/* struct cheatlist */
+TAILQ_HEAD(cheatlist, cheat);
+typedef struct cheatlist cheatlist_t;
 
 /**
  * game_t - a game object
@@ -90,24 +77,18 @@ typedef struct _cheatlist {
  * @cheats: game cheats
  * @tag: arbitrary information
  */
-typedef struct _game {
-	struct _game *next;
-	struct _game *prev;
+struct game {
 	char title[CL_TITLE_MAX + 1];
-	cheatlist_t cheats;
+	struct cheatlist cheats;
 	u_int32_t tag;
-} game_t;
 
-/**
- * gamelist_t - list of games
- * @head: head of game list
- * @tail: tail of game list
- */
-typedef struct _gamelist {
-	game_t *head;
-	game_t *tail;
-} gamelist_t;
+	TAILQ_ENTRY(game) node;
+};
+typedef struct game game_t;
 
+/* struct gamelist */
+TAILQ_HEAD(gamelist, game);
+typedef struct gamelist gamelist_t;
 
 extern game_t *build_game(const char *title, const cheatlist_t *cheats);
 extern cheat_t *build_cheat(const char *desc, const codelist_t *codes);

@@ -35,7 +35,7 @@ void cheats_init(cheats_t *cheats)
 {
 	if (cheats != NULL) {
 		memset(cheats, 0, sizeof(cheats_t));
-		list_init(&cheats->games);
+		TAILQ_INIT(&cheats->games);
 	}
 }
 
@@ -151,11 +151,12 @@ int cheats_write(cheats_t *cheats, FILE *stream)
 	if (cheats == NULL || stream == NULL)
 		return CHEATS_FALSE;
 
-	for (game = cheats->games.head; game != NULL; game = game->next) {
+
+	TAILQ_FOREACH(game, &cheats->games, node) {
 		fprintf(stream, "\"%s\"\n", game->title);
-		for (cheat = game->cheats.head; cheat != NULL; cheat = cheat->next) {
+		TAILQ_FOREACH(cheat, &game->cheats, node) {
 			fprintf(stream, "%s\n", cheat->desc);
-			for (code = cheat->codes.head; code != NULL; code = code->next) {
+			TAILQ_FOREACH(code, &cheat->codes, node) {
 				fprintf(stream, "%08X %08X\n", code->addr, code->val);
 			}
 		}

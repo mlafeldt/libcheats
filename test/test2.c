@@ -30,6 +30,8 @@ int test2(int argc, char *argv[])
 		return -1;
 	}
 
+	printf("cheats:\n");
+	cheats_write(&cheats, stdout);
 	cheats_destroy(&cheats);
 	return 0;
 }
