@@ -34,7 +34,7 @@
  */
 game_t *build_game(const char *title, const cheatlist_t *cheats)
 {
-	game_t *game = (game_t*)calloc(1, sizeof(game_t));
+	game_t *game = (game_t*)malloc(sizeof(game_t));
 
 	if (game != NULL) {
 		if (title != NULL)
@@ -43,6 +43,7 @@ game_t *build_game(const char *title, const cheatlist_t *cheats)
 			game->cheats = *cheats;
 		else
 			TAILQ_INIT(&game->cheats);
+		game->tag = 0;
 	}
 
 	return game;
@@ -56,7 +57,7 @@ game_t *build_game(const char *title, const cheatlist_t *cheats)
  */
 cheat_t *build_cheat(const char *desc, const codelist_t *codes)
 {
-	cheat_t *cheat = (cheat_t*)calloc(1, sizeof(cheat_t));
+	cheat_t *cheat = (cheat_t*)malloc(sizeof(cheat_t));
 
 	if (cheat != NULL) {
 		if (desc != NULL)
@@ -65,6 +66,7 @@ cheat_t *build_cheat(const char *desc, const codelist_t *codes)
 			cheat->codes = *codes;
 		else
 			TAILQ_INIT(&cheat->codes);
+		cheat->tag = 0;
 	}
 
 	return cheat;
@@ -79,11 +81,12 @@ cheat_t *build_cheat(const char *desc, const codelist_t *codes)
  */
 code_t *build_code(u_int32_t addr, u_int32_t val)
 {
-	code_t *code = (code_t*)calloc(1, sizeof(code_t));
+	code_t *code = (code_t*)malloc(sizeof(code_t));
 
 	if (code != NULL) {
 		code->addr = addr;
 		code->val = val;
+		code->tag = 0;
 	}
 
 	return code;
@@ -95,10 +98,12 @@ code_t *build_code(u_int32_t addr, u_int32_t val)
  */
 void free_codes(codelist_t *list)
 {
-#if 0
-	if (list != NULL)
-		list_free(list);
-#endif
+	code_t *code;
+
+	while ((code = TAILQ_FIRST(list)) != NULL) {
+		TAILQ_REMOVE(list, code, node);
+		free(code);
+	}
 }
 
 /**
@@ -107,17 +112,13 @@ void free_codes(codelist_t *list)
  */
 void free_cheats(cheatlist_t *list)
 {
-#if 0
 	cheat_t *cheat;
 
-	if (list == NULL)
-		return;
-
-	for (cheat = list->head; cheat != NULL; cheat = cheat->next)
+	TAILQ_FOREACH(cheat, list, node) {
 		free_codes(&cheat->codes);
-
-	list_free(list);
-#endif
+		TAILQ_REMOVE(list, cheat, node);
+		free(cheat);
+	}
 }
 
 /**
@@ -126,17 +127,13 @@ void free_cheats(cheatlist_t *list)
  */
 void free_games(gamelist_t *list)
 {
-#if 0
 	game_t *game;
 
-	if (list == NULL)
-		return;
-
-	for (game = list->head; game != NULL; game = game->next)
+	TAILQ_FOREACH(game, list, node) {
 		free_cheats(&game->cheats);
-
-	list_free(list);
-#endif
+		TAILQ_REMOVE(list, game, node);
+		free(game);
+	}
 }
 
 /**
@@ -156,16 +153,12 @@ void sort_games(gamelist_t *list)
  */
 game_t *find_game_by_title(const char *title, const gamelist_t *list)
 {
-#if 0
-	if (title != NULL && list != NULL) {
-		game_t *game = list->lh_first;
+	game_t *game;
 
-		while (game != NULL) {
-			if (!strcmp(game->title, title))
-				return game;
-			game = game->node.le_next;
-		}
+	TAILQ_FOREACH(game, list, node) {
+		if (!strcmp(game->title, title))
+			return game;
 	}
-#endif
+
 	return NULL;
 }
