@@ -28,12 +28,13 @@
 #include "dbgprintf.h"
 
 /**
- * build_game - Create a new game object and populate it.
+ * make_game - Create a new game object and populate it.
  * @title: game title
  * @cheats: game cheats
+ * @tag: arbitrary information
  * @return: ptr to new game object, or NULL on mem alloc error
  */
-game_t *build_game(const char *title, const cheatlist_t *cheats)
+game_t *make_game(const char *title, const cheatlist_t *cheats, u_int32_t tag)
 {
 	game_t *game = (game_t*)malloc(sizeof(game_t));
 
@@ -44,19 +45,20 @@ game_t *build_game(const char *title, const cheatlist_t *cheats)
 			game->cheats = *cheats;
 		else
 			TAILQ_INIT(&game->cheats);
-		game->tag = 0;
+		game->tag = tag;
 	}
 
 	return game;
 }
 
 /**
- * build_cheat - Create a new cheat object and populate it.
+ * make_cheat - Create a new cheat object and populate it.
  * @desc: cheat description
  * @codes: cheat codes
+ * @tag: arbitrary information
  * @return: ptr to new cheat object, or NULL on mem alloc error
  */
-cheat_t *build_cheat(const char *desc, const codelist_t *codes)
+cheat_t *make_cheat(const char *desc, const codelist_t *codes, u_int32_t tag)
 {
 	cheat_t *cheat = (cheat_t*)malloc(sizeof(cheat_t));
 
@@ -67,27 +69,27 @@ cheat_t *build_cheat(const char *desc, const codelist_t *codes)
 			cheat->codes = *codes;
 		else
 			TAILQ_INIT(&cheat->codes);
-		cheat->tag = 0;
+		cheat->tag = tag;
 	}
 
 	return cheat;
 }
 
 /**
- * build_code - Create a new code object.
+ * make_code - Create a new code object.
  * @addr: code address
  * @val: code value
  * @tag: arbitrary information
  * @return: ptr to new code object, or NULL on mem alloc error
  */
-code_t *build_code(u_int32_t addr, u_int32_t val)
+code_t *make_code(u_int32_t addr, u_int32_t val, u_int32_t tag)
 {
 	code_t *code = (code_t*)malloc(sizeof(code_t));
 
 	if (code != NULL) {
 		code->addr = addr;
 		code->val = val;
-		code->tag = 0;
+		code->tag = tag;
 	}
 
 	return code;

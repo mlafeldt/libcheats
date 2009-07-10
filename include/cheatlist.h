@@ -35,20 +35,16 @@
  * @addr: code address
  * @val: code value
  * @tag: arbitrary information
- * @node:
  */
-struct code {
+typedef struct _code {
 	u_int32_t addr;
 	u_int32_t val;
 	u_int32_t tag;
 
-	TAILQ_ENTRY(code) node;
-};
-typedef struct code code_t;
+	TAILQ_ENTRY(_code) node;
+} code_t;
 
-/* struct codelist */
-TAILQ_HEAD(codelist, code);
-typedef struct codelist codelist_t;
+typedef TAILQ_HEAD(codelist, _code) codelist_t;
 
 /**
  * cheat_t - a cheat object
@@ -56,49 +52,40 @@ typedef struct codelist codelist_t;
  * @codes: cheat codes
  * @tag: arbitrary information
  */
-struct cheat {
+typedef struct _cheat {
 	char desc[CL_DESC_MAX + 1];
-	struct codelist codes;
+	codelist_t codes;
 	u_int32_t tag;
 
-	TAILQ_ENTRY(cheat) node;
-};
-typedef struct cheat cheat_t;
+	TAILQ_ENTRY(_cheat) node;
+} cheat_t;
 
-/* struct cheatlist */
-TAILQ_HEAD(cheatlist, cheat);
-typedef struct cheatlist cheatlist_t;
+typedef TAILQ_HEAD(cheatlist, _cheat) cheatlist_t;
 
 /**
  * game_t - a game object
- * @next: next game in list
- * @prev: previous game in list
  * @title: game title
  * @cheats: game cheats
  * @tag: arbitrary information
  */
-struct game {
+typedef struct _game {
 	char title[CL_TITLE_MAX + 1];
-	struct cheatlist cheats;
+	cheatlist_t cheats;
 	u_int32_t tag;
 
-	TAILQ_ENTRY(game) node;
-};
-typedef struct game game_t;
+	TAILQ_ENTRY(_game) node;
+} game_t;
 
-/* struct gamelist */
-TAILQ_HEAD(gamelist, game);
-typedef struct gamelist gamelist_t;
+typedef TAILQ_HEAD(gamelist, _game) gamelist_t;
 
-extern game_t *build_game(const char *title, const cheatlist_t *cheats);
-extern cheat_t *build_cheat(const char *desc, const codelist_t *codes);
-extern code_t *build_code(u_int32_t addr, u_int32_t val);
+
+extern game_t *make_game(const char *title, const cheatlist_t *cheats, u_int32_t tag);
+extern cheat_t *make_cheat(const char *desc, const codelist_t *codes, u_int32_t tag);
+extern code_t *make_code(u_int32_t addr, u_int32_t val, u_int32_t tag);
 
 extern void free_codes(codelist_t *list);
 extern void free_cheats(cheatlist_t *list);
 extern void free_games(gamelist_t *list);
-
-extern void sort_games(gamelist_t *list);
 
 extern game_t *find_game_by_title(const char *title, const gamelist_t *list);
 
