@@ -102,8 +102,8 @@ typedef struct _game {
 typedef TAILQ_HEAD(gamelist, _game) gamelist_t;
 
 extern code_t *make_code(u_int32_t addr, u_int32_t val, u_int32_t tag);
-extern cheat_t *make_cheat(const char *desc, const codelist_t *codes, u_int32_t tag);
-extern game_t *make_game(const char *title, const cheatlist_t *cheats, u_int32_t tag);
+extern cheat_t *make_cheat(const char *desc, codelist_t *codes, u_int32_t tag);
+extern game_t *make_game(const char *title, cheatlist_t *cheats, u_int32_t tag);
 
 extern void free_codes(codelist_t *list);
 extern void free_cheats(cheatlist_t *list);

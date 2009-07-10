@@ -53,17 +53,18 @@ code_t *make_code(u_int32_t addr, u_int32_t val, u_int32_t tag)
  * @tag: arbitrary information
  * @return: ptr to new cheat object, or NULL on mem alloc error
  */
-cheat_t *make_cheat(const char *desc, const codelist_t *codes, u_int32_t tag)
+cheat_t *make_cheat(const char *desc, codelist_t *codes, u_int32_t tag)
 {
 	cheat_t *cheat = (cheat_t*)malloc(sizeof(cheat_t));
 
 	if (cheat != NULL) {
 		if (desc != NULL)
 			strncpy(cheat->desc, desc, CL_DESC_MAX);
+
+		TAILQ_INIT(&cheat->codes);
 		if (codes != NULL)
-			cheat->codes = *codes;
-		else
-			TAILQ_INIT(&cheat->codes);
+			TAILQ_CONCAT(&cheat->codes, codes, node);
+
 		cheat->tag = tag;
 	}
 
@@ -77,17 +78,18 @@ cheat_t *make_cheat(const char *desc, const codelist_t *codes, u_int32_t tag)
  * @tag: arbitrary information
  * @return: ptr to new game object, or NULL on mem alloc error
  */
-game_t *make_game(const char *title, const cheatlist_t *cheats, u_int32_t tag)
+game_t *make_game(const char *title, cheatlist_t *cheats, u_int32_t tag)
 {
 	game_t *game = (game_t*)malloc(sizeof(game_t));
 
 	if (game != NULL) {
 		if (title != NULL)
 			strncpy(game->title, title, CL_TITLE_MAX);
+
+		TAILQ_INIT(&game->cheats);
 		if (cheats != NULL)
-			game->cheats = *cheats;
-		else
-			TAILQ_INIT(&game->cheats);
+			TAILQ_CONCAT(&game->cheats, cheats, node);
+
 		game->tag = tag;
 	}
 
