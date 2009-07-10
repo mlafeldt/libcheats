@@ -1,6 +1,6 @@
 INCLUDE_DIRECTORIES(../include)
 
-SET(TESTSUITES test1.c test2.c test3.c)
+SET(TESTSUITES test1.c test2.c test3.c test4.c)
 CREATE_TEST_SOURCELIST(TESTSRC test_driver.c ${TESTSUITES})
 
 ADD_EXECUTABLE(test_driver ${TESTSRC})

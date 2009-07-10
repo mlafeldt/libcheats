@@ -1,5 +1,5 @@
 /*
- * test cheats_read_buf()
+ * test freeing of memory
  */
 
 #include <stdio.h>
@@ -17,22 +17,24 @@ static const char *text =
 "Unlock all Levels\n"
 "20383A30 00000000\n";
 
-int test2(int argc, char *argv[])
+int test4(int argc, char *argv[])
 {
 	cheats_t cheats;
+	int i;
 
-	cheats_init(&cheats);
+	for (i = 1; i <= 10; i++) {
+		cheats_init(&cheats);
 
-	if (cheats_read_buf(&cheats, text) != CHEATS_TRUE) {
-		printf("line: %i\nerror: %s\n",
-			cheats.error_line, cheats.error_text);
+		if (cheats_read_buf(&cheats, text) != CHEATS_TRUE) {
+			printf("line: %i\nerror: %s\n",
+				cheats.error_line, cheats.error_text);
+			cheats_destroy(&cheats);
+			return -1;
+		}
+
+		printf("---------- free test #%i ----------\n", i);
 		cheats_destroy(&cheats);
-		return -1;
 	}
-
-	printf("cheats:\n\n");
-	cheats_write(&cheats, stdout);
-	cheats_destroy(&cheats);
 
 	return 0;
 }

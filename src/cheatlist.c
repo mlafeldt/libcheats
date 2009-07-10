@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cheatlist.h"
+#include "dbgprintf.h"
 
 /**
  * build_game - Create a new game object and populate it.
@@ -101,6 +102,7 @@ void free_codes(codelist_t *list)
 	code_t *code;
 
 	while ((code = TAILQ_FIRST(list)) != NULL) {
+		D_PRINTF("free %08X %08X\n", code->addr, code->val);
 		TAILQ_REMOVE(list, code, node);
 		free(code);
 	}
@@ -115,6 +117,7 @@ void free_cheats(cheatlist_t *list)
 	cheat_t *cheat;
 
 	TAILQ_FOREACH(cheat, list, node) {
+		D_PRINTF("free %s\n", cheat->desc);
 		free_codes(&cheat->codes);
 		TAILQ_REMOVE(list, cheat, node);
 		free(cheat);
@@ -130,6 +133,7 @@ void free_games(gamelist_t *list)
 	game_t *game;
 
 	TAILQ_FOREACH(game, list, node) {
+		D_PRINTF("free %s\n", game->title);
 		free_cheats(&game->cheats);
 		TAILQ_REMOVE(list, game, node);
 		free(game);
