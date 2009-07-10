@@ -105,6 +105,10 @@ extern code_t *make_code(u_int32_t addr, u_int32_t val, u_int32_t tag);
 extern cheat_t *make_cheat(const char *desc, codelist_t *codes, u_int32_t tag);
 extern game_t *make_game(const char *title, cheatlist_t *cheats, u_int32_t tag);
 
+extern void remove_code(codelist_t *list, code_t *code);
+extern void remove_cheat(cheatlist_t *list, cheat_t *cheat);
+extern void remove_game(gamelist_t *list, game_t *game);
+
 extern void free_codes(codelist_t *list);
 extern void free_cheats(cheatlist_t *list);
 extern void free_games(gamelist_t *list);

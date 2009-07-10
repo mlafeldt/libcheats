@@ -48,8 +48,8 @@ code_t *make_code(u_int32_t addr, u_int32_t val, u_int32_t tag)
 
 /**
  * make_cheat - Create a new cheat object and populate it.
- * @desc: cheat description
- * @codes: cheat codes
+ * @desc: cheat description (can be NULL)
+ * @codes: cheat codes (can be NULL)
  * @tag: arbitrary information
  * @return: ptr to new cheat object, or NULL on mem alloc error
  */
@@ -73,8 +73,8 @@ cheat_t *make_cheat(const char *desc, codelist_t *codes, u_int32_t tag)
 
 /**
  * make_game - Create a new game object and populate it.
- * @title: game title
- * @cheats: game cheats
+ * @title: game title (can be NULL)
+ * @cheats: game cheats (can be NULL)
  * @tag: arbitrary information
  * @return: ptr to new game object, or NULL on mem alloc error
  */
@@ -96,9 +96,37 @@ game_t *make_game(const char *title, cheatlist_t *cheats, u_int32_t tag)
 	return game;
 }
 
-/**
+/*
+ * remove_code - Remove a code from a code list and free its memory.
+ */
+void remove_code(codelist_t *list, code_t *code)
+{
+	TAILQ_REMOVE(list, code, node);
+	free(code);
+}
+
+/*
+ * remove_cheat - Remove a cheat from a cheat list and free its memory.
+ */
+void remove_cheat(cheatlist_t *list, cheat_t *cheat)
+{
+	free_codes(&cheat->codes);
+	TAILQ_REMOVE(list, cheat, node);
+	free(cheat);
+}
+
+/*
+ * remove_game - Remove a game from a game list and free its memory.
+ */
+void remove_game(gamelist_t *list, game_t *game)
+{
+	free_cheats(&game->cheats);
+	TAILQ_REMOVE(list, game, node);
+	free(game);
+}
+
+/*
  * free_codes - Free a code list.
- * @list: list to be freed
  */
 void free_codes(codelist_t *list)
 {
@@ -111,9 +139,8 @@ void free_codes(codelist_t *list)
 	}
 }
 
-/**
+/*
  * free_cheats - Free a cheat list.
- * @list: list to be freed
  */
 void free_cheats(cheatlist_t *list)
 {
@@ -127,9 +154,8 @@ void free_cheats(cheatlist_t *list)
 	}
 }
 
-/**
+/*
  * free_games - Free a game list.
- * @list: list to be freed
  */
 void free_games(gamelist_t *list)
 {

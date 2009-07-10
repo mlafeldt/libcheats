@@ -21,6 +21,7 @@ static void add_game(gamelist_t *list)
 	TAILQ_INSERT_TAIL(&cheat->codes, code, node);
 	code = make_code(0x789, 0, 0);
 	TAILQ_INSERT_TAIL(&cheat->codes, code, node);
+	remove_code(&cheat->codes, code);
 }
 
 static void add_game2(gamelist_t *list)
