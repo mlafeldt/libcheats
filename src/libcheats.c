@@ -20,6 +20,7 @@
  * along with libcheats.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <sys/queue.h>
 #include <stdio.h>
 #include <string.h>
 #include "cheatlist.h"
@@ -150,7 +151,6 @@ int cheats_write(cheats_t *cheats, FILE *stream)
 
 	if (cheats == NULL || stream == NULL)
 		return CHEATS_FALSE;
-
 
 	TAILQ_FOREACH(game, &cheats->games, node) {
 		fprintf(stream, "\"%s\"\n", game->title);

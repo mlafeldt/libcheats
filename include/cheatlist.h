@@ -30,6 +30,28 @@
 /* Max cheat description length */
 #define CL_DESC_MAX	127
 
+/*
+ * Here's how everything is organized.  The current implementation uses tail
+ * queues to store game, cheat, and code objects.
+ *
+ * gamelist
+ * |- game
+ * |  |- cheatlist
+ * |  |  |- cheat
+ * |  |  |  |- codelist
+ * |  |  |  |  |- code
+ * |  |  |  |  |- code
+ * |  |  |  |  |- ...
+ * |  |  |- cheat
+ * |  |  |  |- codelist
+ * |  |  |  |  |- code
+ * |  |  |  |  |- code
+ * |  |  |  |  |- ...
+ * |  |  |- ...
+ * |- game
+ * |- ...
+ */
+
 /**
  * code_t - a code object
  * @addr: code address

@@ -21,34 +21,29 @@
 
 #include <sys/types.h>
 #include <sys/queue.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "cheatlist.h"
 #include "dbgprintf.h"
 
 /**
- * make_game - Create a new game object and populate it.
- * @title: game title
- * @cheats: game cheats
+ * make_code - Create a new code object.
+ * @addr: code address
+ * @val: code value
  * @tag: arbitrary information
- * @return: ptr to new game object, or NULL on mem alloc error
+ * @return: ptr to new code object, or NULL on mem alloc error
  */
-game_t *make_game(const char *title, const cheatlist_t *cheats, u_int32_t tag)
+code_t *make_code(u_int32_t addr, u_int32_t val, u_int32_t tag)
 {
-	game_t *game = (game_t*)malloc(sizeof(game_t));
+	code_t *code = (code_t*)malloc(sizeof(code_t));
 
-	if (game != NULL) {
-		if (title != NULL)
-			strncpy(game->title, title, CL_TITLE_MAX);
-		if (cheats != NULL)
-			game->cheats = *cheats;
-		else
-			TAILQ_INIT(&game->cheats);
-		game->tag = tag;
+	if (code != NULL) {
+		code->addr = addr;
+		code->val = val;
+		code->tag = tag;
 	}
 
-	return game;
+	return code;
 }
 
 /**
@@ -76,23 +71,27 @@ cheat_t *make_cheat(const char *desc, const codelist_t *codes, u_int32_t tag)
 }
 
 /**
- * make_code - Create a new code object.
- * @addr: code address
- * @val: code value
+ * make_game - Create a new game object and populate it.
+ * @title: game title
+ * @cheats: game cheats
  * @tag: arbitrary information
- * @return: ptr to new code object, or NULL on mem alloc error
+ * @return: ptr to new game object, or NULL on mem alloc error
  */
-code_t *make_code(u_int32_t addr, u_int32_t val, u_int32_t tag)
+game_t *make_game(const char *title, const cheatlist_t *cheats, u_int32_t tag)
 {
-	code_t *code = (code_t*)malloc(sizeof(code_t));
+	game_t *game = (game_t*)malloc(sizeof(game_t));
 
-	if (code != NULL) {
-		code->addr = addr;
-		code->val = val;
-		code->tag = tag;
+	if (game != NULL) {
+		if (title != NULL)
+			strncpy(game->title, title, CL_TITLE_MAX);
+		if (cheats != NULL)
+			game->cheats = *cheats;
+		else
+			TAILQ_INIT(&game->cheats);
+		game->tag = tag;
 	}
 
-	return code;
+	return game;
 }
 
 /**
