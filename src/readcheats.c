@@ -288,7 +288,6 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 			return -1;
 		}
 		TAILQ_INSERT_TAIL(list, ctx->game, node);
-		TAILQ_INIT(&ctx->game->cheats);
 		break;
 
 	case TOK_CHEAT_DESC:
@@ -298,7 +297,6 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 			return -1;
 		}
 		TAILQ_INSERT_TAIL(&ctx->game->cheats, ctx->cheat, node);
-		TAILQ_INIT(&ctx->cheat->codes);
 		break;
 
 	case TOK_CHEAT_CODE:

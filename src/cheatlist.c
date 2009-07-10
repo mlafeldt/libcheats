@@ -20,6 +20,7 @@
  */
 
 #include <sys/types.h>
+#include <sys/queue.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,6 +41,8 @@ game_t *build_game(const char *title, const cheatlist_t *cheats)
 			strncpy(game->title, title, CL_TITLE_MAX);
 		if (cheats != NULL)
 			game->cheats = *cheats;
+		else
+			TAILQ_INIT(&game->cheats);
 	}
 
 	return game;
@@ -60,6 +63,8 @@ cheat_t *build_cheat(const char *desc, const codelist_t *codes)
 			strncpy(cheat->desc, desc, CL_DESC_MAX);
 		if (codes != NULL)
 			cheat->codes = *codes;
+		else
+			TAILQ_INIT(&cheat->codes);
 	}
 
 	return cheat;
@@ -161,7 +166,6 @@ game_t *find_game_by_title(const char *title, const gamelist_t *list)
 			game = game->node.le_next;
 		}
 	}
-
-	return NULL;
 #endif
+	return NULL;
 }
