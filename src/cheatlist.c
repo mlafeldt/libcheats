@@ -117,7 +117,7 @@ void free_cheats(cheatlist_t *list)
 {
 	cheat_t *cheat;
 
-	TAILQ_FOREACH(cheat, list, node) {
+	while ((cheat = TAILQ_FIRST(list)) != NULL) {
 		D_PRINTF("free %s\n", cheat->desc);
 		free_codes(&cheat->codes);
 		TAILQ_REMOVE(list, cheat, node);
@@ -133,7 +133,7 @@ void free_games(gamelist_t *list)
 {
 	game_t *game;
 
-	TAILQ_FOREACH(game, list, node) {
+	while ((game = TAILQ_FIRST(list)) != NULL) {
 		D_PRINTF("free %s\n", game->title);
 		free_cheats(&game->cheats);
 		TAILQ_REMOVE(list, game, node);

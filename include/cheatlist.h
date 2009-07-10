@@ -32,7 +32,8 @@
 
 /*
  * Here's how everything is organized.  The current implementation uses tail
- * queues to store game, cheat, and code objects.
+ * queues to store games, cheats, and codes, so the TAILQ_* macros from
+ * <sys/queue.h> are your friend.
  *
  * gamelist
  * |- game
@@ -59,9 +60,9 @@
  * @tag: arbitrary information
  */
 typedef struct _code {
-	u_int32_t addr;
-	u_int32_t val;
-	u_int32_t tag;
+	u_int32_t	addr;
+	u_int32_t	val;
+	u_int32_t	tag;
 
 	TAILQ_ENTRY(_code) node;
 } code_t;
@@ -75,9 +76,9 @@ typedef TAILQ_HEAD(codelist, _code) codelist_t;
  * @tag: arbitrary information
  */
 typedef struct _cheat {
-	char desc[CL_DESC_MAX + 1];
-	codelist_t codes;
-	u_int32_t tag;
+	char		desc[CL_DESC_MAX + 1];
+	codelist_t	codes;
+	u_int32_t	tag;
 
 	TAILQ_ENTRY(_cheat) node;
 } cheat_t;
@@ -91,19 +92,18 @@ typedef TAILQ_HEAD(cheatlist, _cheat) cheatlist_t;
  * @tag: arbitrary information
  */
 typedef struct _game {
-	char title[CL_TITLE_MAX + 1];
-	cheatlist_t cheats;
-	u_int32_t tag;
+	char		title[CL_TITLE_MAX + 1];
+	cheatlist_t	cheats;
+	u_int32_t	tag;
 
 	TAILQ_ENTRY(_game) node;
 } game_t;
 
 typedef TAILQ_HEAD(gamelist, _game) gamelist_t;
 
-
-extern game_t *make_game(const char *title, const cheatlist_t *cheats, u_int32_t tag);
-extern cheat_t *make_cheat(const char *desc, const codelist_t *codes, u_int32_t tag);
 extern code_t *make_code(u_int32_t addr, u_int32_t val, u_int32_t tag);
+extern cheat_t *make_cheat(const char *desc, const codelist_t *codes, u_int32_t tag);
+extern game_t *make_game(const char *title, const cheatlist_t *cheats, u_int32_t tag);
 
 extern void free_codes(codelist_t *list);
 extern void free_cheats(cheatlist_t *list);
