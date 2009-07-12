@@ -1,6 +1,5 @@
 /*
- * libcheats.c - Library for reading, manipulating, and writing cheat codes in
- * text format
+ * libcheats.c - Read, manipulate, and write cheat codes in text format
  *
  * Copyright (C) 2009 misfire <misfire@xploderfreax.de>
  *
@@ -26,7 +25,7 @@
 #include "cheatlist.h"
 #include "dbgprintf.h"
 #include "libcheats.h"
-#include "readcheats.h"
+#include "parser.h"
 
 /**
  * cheats_init - Initialize a cheats object.

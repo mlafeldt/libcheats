@@ -1,6 +1,5 @@
 /*
- * libcheats.h - Library for reading, manipulating, and writing cheat codes in
- * text format
+ * libcheats.h - Read, manipulate, and write cheat codes in text format
  *
  * Copyright (C) 2009 misfire <misfire@xploderfreax.de>
  *

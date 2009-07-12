@@ -41,11 +41,10 @@
 
 /**
  * parser_ctx_t - parser context
- * @top: token at the top of each game, see TOK_* flags
  * @next: next expected token(s), see TOK_* flags
- * @game: ptr to current game
- * @cheat: ptr to current cheat
- * @code: ptr to current code
+ * @game: ptr to current game object
+ * @cheat: ptr to current cheat object
+ * @code: ptr to current code object
  */
 typedef struct _parser_ctx {
 	int	top;
@@ -86,7 +85,7 @@ static const char *tok2str(int tok)
 /*
  * is_cmt_str - Return non-zero if @s indicates a comment.
  */
-static int is_cmt_str(const char *s)
+static inline int is_cmt_str(const char *s)
 {
 	return (strlen(s) >= 2 && !strncmp(s, "//", 2)) || (*s == '#');
 }
@@ -96,7 +95,7 @@ static int is_cmt_str(const char *s)
  *
  * Example: "TimeSplitters PAL"
  */
-static int is_game_title(const char *s)
+static inline int is_game_title(const char *s)
 {
 	size_t len = strlen(s);
 
@@ -108,7 +107,7 @@ static int is_game_title(const char *s)
  *
  * Example: 10B8DAFA 00003F00
  */
-static int is_cheat_code(const char *s)
+static inline int is_cheat_code(const char *s)
 {
 	int i = 0;
 
@@ -142,14 +141,14 @@ static int get_token(const char *s, int top)
 /*
  * next_token - Return next expected token(s).
  */
-static int next_token(int tok, int top)
+static int next_token(int tok)
 {
 	switch (tok) {
 	case TOK_GAME_TITLE:
-		return top | TOK_CHEAT_DESC;
+		return TOK_GAME_TITLE | TOK_CHEAT_DESC;
 	case TOK_CHEAT_DESC:
 	case TOK_CHEAT_CODE:
-		return top | TOK_CHEAT_DESC | TOK_CHEAT_CODE;
+		return TOK_GAME_TITLE | TOK_CHEAT_DESC | TOK_CHEAT_CODE;
 	default:
 		return TOK_NO;
 	}
@@ -204,8 +203,8 @@ static code_t *__make_code(const char *s)
 static void init_parser(parser_ctx_t *ctx)
 {
 	if (ctx != NULL) {
-		ctx->top = TOK_GAME_TITLE;
-		ctx->next = ctx->top;
+		/* first token must be a game title */
+		ctx->next = TOK_GAME_TITLE;
 		ctx->game = NULL;
 		ctx->cheat = NULL;
 		ctx->code = NULL;
@@ -245,15 +244,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 	 * operations succeed.
 	 */
 	if (!(ctx->next & tok)) {
-		int x = 0;
-		if (ctx->next & TOK_CHEAT_CODE)
-			x = TOK_CHEAT_CODE;
-		else if (ctx->next & TOK_CHEAT_DESC)
-			x = TOK_CHEAT_DESC;
-		else if (ctx->next & TOK_GAME_TITLE)
-			x = TOK_GAME_TITLE;
-		parse_err(nl, "parse error: %s invalid here; %s expected",
-			tok2str(tok), tok2str(x));
+		parse_err(nl, "parse error: %s invalid here", tok2str(tok));
 		return -1;
 	}
 
@@ -287,7 +278,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 		break;
 	}
 
-	ctx->next = next_token(tok, ctx->top);
+	ctx->next = next_token(tok);
 
 	return 0;
 }
