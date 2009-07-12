@@ -96,77 +96,105 @@ game_t *make_game(const char *title, cheatlist_t *cheats, u_int32_t tag)
 	return game;
 }
 
-/*
- * remove_code - Remove a code from a code list and free its memory.
- */
-void remove_code(codelist_t *list, code_t *code)
+#if 0
+void add_code(codelist_t *list, code_t *code)
 {
-	TAILQ_REMOVE(list, code, node);
-	free(code);
+	TAILQ_INSERT_TAIL(list, code, node);
 }
+#endif
 
-/*
- * remove_cheat - Remove a cheat from a cheat list and free its memory.
- */
-void remove_cheat(cheatlist_t *list, cheat_t *cheat)
-{
-	free_codes(&cheat->codes);
-	TAILQ_REMOVE(list, cheat, node);
-	free(cheat);
-}
-
-/*
- * remove_game - Remove a game from a game list and free its memory.
- */
-void remove_game(gamelist_t *list, game_t *game)
-{
-	free_cheats(&game->cheats);
-	TAILQ_REMOVE(list, game, node);
-	free(game);
-}
-
-/*
- * free_codes - Free a code list.
- */
-void free_codes(codelist_t *list)
+static inline void __remove_codes(codelist_t *list, int _free)
 {
 	code_t *code;
 
 	while ((code = TAILQ_FIRST(list)) != NULL) {
 		D_PRINTF("free %08X %08X\n", code->addr, code->val);
 		TAILQ_REMOVE(list, code, node);
-		free(code);
+		if (_free)
+			free(code);
 	}
 }
 
-/*
- * free_cheats - Free a cheat list.
- */
-void free_cheats(cheatlist_t *list)
+static inline void __remove_cheats(cheatlist_t *list, int _free)
 {
 	cheat_t *cheat;
 
 	while ((cheat = TAILQ_FIRST(list)) != NULL) {
 		D_PRINTF("free %s\n", cheat->desc);
-		free_codes(&cheat->codes);
+		__remove_codes(&cheat->codes, _free);
 		TAILQ_REMOVE(list, cheat, node);
-		free(cheat);
+		if (_free)
+			free(cheat);
 	}
 }
 
-/*
- * free_games - Free a game list.
- */
-void free_games(gamelist_t *list)
+static inline void __remove_games(gamelist_t *list, int _free)
 {
 	game_t *game;
 
 	while ((game = TAILQ_FIRST(list)) != NULL) {
 		D_PRINTF("free %s\n", game->title);
-		free_cheats(&game->cheats);
+		__remove_cheats(&game->cheats, _free);
 		TAILQ_REMOVE(list, game, node);
-		free(game);
+		if (_free)
+			free(game);
 	}
+}
+
+/*
+ * remove_code - Remove a code from a code list and optionally free its memory.
+ */
+void remove_code(codelist_t *list, code_t *code, int _free)
+{
+	TAILQ_REMOVE(list, code, node);
+	if (_free)
+		free(code);
+}
+
+/*
+ * remove_cheat - Remove a cheat from a cheat list and optionally free its memory.
+ */
+void remove_cheat(cheatlist_t *list, cheat_t *cheat, int _free)
+{
+	__remove_codes(&cheat->codes, _free);
+	TAILQ_REMOVE(list, cheat, node);
+	if (_free)
+		free(cheat);
+}
+
+/*
+ * remove_game - Remove a game from a game list and optionally free its memory.
+ */
+void remove_game(gamelist_t *list, game_t *game, int _free)
+{
+	__remove_cheats(&game->cheats, _free);
+	TAILQ_REMOVE(list, game, node);
+	if (_free)
+		free(game);
+}
+
+/*
+ * free_codes - Free an entire code list.
+ */
+void free_codes(codelist_t *list)
+{
+	__remove_codes(list, 1);
+}
+
+/*
+ * free_cheats - Free an entire cheat list.
+ */
+void free_cheats(cheatlist_t *list)
+{
+	__remove_cheats(list, 1);
+}
+
+/*
+ * free_games - Free an entire game list.
+ */
+void free_games(gamelist_t *list)
+{
+	__remove_games(list, 1);
 }
 
 /**

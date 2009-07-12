@@ -26,9 +26,9 @@
 #include <sys/queue.h>
 
 /* Max game title length */
-#define CL_TITLE_MAX	127
+#define CL_TITLE_MAX	80
 /* Max cheat description length */
-#define CL_DESC_MAX	127
+#define CL_DESC_MAX	80
 
 /*
  * Here's how everything is organized.  The current implementation uses tail
@@ -105,9 +105,9 @@ extern code_t *make_code(u_int32_t addr, u_int32_t val, u_int32_t tag);
 extern cheat_t *make_cheat(const char *desc, codelist_t *codes, u_int32_t tag);
 extern game_t *make_game(const char *title, cheatlist_t *cheats, u_int32_t tag);
 
-extern void remove_code(codelist_t *list, code_t *code);
-extern void remove_cheat(cheatlist_t *list, cheat_t *cheat);
-extern void remove_game(gamelist_t *list, game_t *game);
+extern void remove_code(codelist_t *list, code_t *code, int _free);
+extern void remove_cheat(cheatlist_t *list, cheat_t *cheat, int _free);
+extern void remove_game(gamelist_t *list, game_t *game, int _free);
 
 extern void free_codes(codelist_t *list);
 extern void free_cheats(cheatlist_t *list);
