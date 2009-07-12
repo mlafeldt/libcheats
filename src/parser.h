@@ -1,5 +1,5 @@
 /*
- * readcheats.h - Read cheat codes from text files
+ * parser.h - Parse cheats from text files
  *
  * Copyright (C) 2009 misfire <misfire@xploderfreax.de>
  *
@@ -19,8 +19,8 @@
  * along with libcheats.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _READCHEATS_H_
-#define _READCHEATS_H_
+#ifndef _PARSER_H_
+#define _PARSER_H_
 
 #include <stdio.h>
 #include "cheatlist.h"
@@ -31,4 +31,4 @@ int parse_error_line;
 int parse_stream(gamelist_t *list, FILE *stream);
 int parse_buf(gamelist_t *list, const char *buf);
 
-#endif /* _READCHEATS_H_ */
+#endif /* _PARSER_H_ */

@@ -4,5 +4,5 @@ ADD_DEFINITIONS(-D_DEBUG)
 
 INCLUDE_DIRECTORIES(../include)
 
-SET(SRCS mystring.c cheatlist.c readcheats.c libcheats.c)
+SET(SRCS mystring.c cheatlist.c parser.c libcheats.c)
 ADD_LIBRARY(cheats SHARED ${SRCS})

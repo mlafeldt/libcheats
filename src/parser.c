@@ -1,5 +1,5 @@
 /*
- * readcheats.c - Read cheat codes from text files
+ * parser.c - Parse cheats from text files
  *
  * Copyright (C) 2009 misfire <misfire@xploderfreax.de>
  *
@@ -88,8 +88,7 @@ static const char *tok2str(int tok)
  */
 static int is_cmt_str(const char *s)
 {
-	return (s != NULL && strlen(s) >= 2 &&
-		!strncmp(s, "//", 2)) || (*s == '#');
+	return (strlen(s) >= 2 && !strncmp(s, "//", 2)) || (*s == '#');
 }
 
 /*
@@ -99,12 +98,7 @@ static int is_cmt_str(const char *s)
  */
 static int is_game_title(const char *s)
 {
-	size_t len;
-
-	if (s == NULL)
-		return 0;
-
-	len = strlen(s);
+	size_t len = strlen(s);
 
 	return ((len > 2) && (*s == '"') && (s[len - 1] == '"'));
 }
@@ -117,9 +111,6 @@ static int is_game_title(const char *s)
 static int is_cheat_code(const char *s)
 {
 	int i = 0;
-
-	if (s == NULL)
-		return 0;
 
 	while (*s) {
 		if (isxdigit(*s)) {
@@ -140,9 +131,7 @@ static int is_cheat_code(const char *s)
  */
 static int get_token(const char *s, int top)
 {
-	if (s == NULL)
-		return TOK_NO;
-	else if (is_game_title(s))
+	if (is_game_title(s))
 		return TOK_GAME_TITLE;
 	else if (is_cheat_code(s))
 		return TOK_CHEAT_CODE;
@@ -167,14 +156,11 @@ static int next_token(int tok, int top)
 }
 
 /*
- * get_game - Create a game object from a game title.
+ * __make_game - Create a game object from a game title.
  */
-static game_t *get_game(const char *title)
+static game_t *__make_game(const char *title)
 {
 	char buf[CL_TITLE_MAX + 1];
-
-	if (title == NULL)
-		return NULL;
 
 	/* Remove leading and trailing quotes from game title */
 	strncpy(buf, title + 1, strlen(title) - 2);
@@ -184,24 +170,21 @@ static game_t *get_game(const char *title)
 }
 
 /*
- * get_cheat - Create a cheat object from a cheat description.
+ * __make_cheat - Create a cheat object from a cheat description.
  */
-static cheat_t *get_cheat(const char *desc)
+static cheat_t *__make_cheat(const char *desc)
 {
 	return make_cheat(desc, NULL, 0);
 }
 
 /*
- * get_code - Create a code object from string @s.
+ * __make_code - Create a code object from string @s.
  */
-static code_t *get_code(const char *s)
+static code_t *__make_code(const char *s)
 {
 	char digits[CODE_DIGITS];
 	int i = 0;
 	u_int32_t addr, val;
-
-	if (s == NULL)
-		return NULL;
 
 	while (*s) {
 		if (isxdigit(*s))
@@ -254,16 +237,11 @@ static void parse_err(int nl, const char *msg, ...)
  */
 static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *list)
 {
-	int tok;
-
-	if (line == NULL || ctx == NULL || list == NULL)
-		return -1;
-
-	tok = get_token(line, ctx->top);
+	int tok = get_token(line, ctx->top);
 	D_PRINTF("%4i  %i  %s\n", nl, tok, line);
 
 	/*
-	 * Check if current token is expected; makes sure that the list
+	 * Check if current token is expected - makes sure that the list
 	 * operations succeed.
 	 */
 	if (!(ctx->next & tok)) {
@@ -282,27 +260,27 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 	/* Process actual token and add it to the list it belongs to. */
 	switch (tok) {
 	case TOK_GAME_TITLE:
-		ctx->game = get_game(line);
+		ctx->game = __make_game(line);
 		if (ctx->game == NULL) {
-			parse_err(nl, "mem alloc failure in get_game()");
+			parse_err(nl, "make_game() failed");
 			return -1;
 		}
 		TAILQ_INSERT_TAIL(list, ctx->game, node);
 		break;
 
 	case TOK_CHEAT_DESC:
-		ctx->cheat = get_cheat(line);
+		ctx->cheat = __make_cheat(line);
 		if (ctx->cheat == NULL) {
-			parse_err(nl, "mem alloc failure in get_cheat()");
+			parse_err(nl, "make_cheat() failed");
 			return -1;
 		}
 		TAILQ_INSERT_TAIL(&ctx->game->cheats, ctx->cheat, node);
 		break;
 
 	case TOK_CHEAT_CODE:
-		ctx->code = get_code(line);
+		ctx->code = __make_code(line);
 		if (ctx->code == NULL) {
-			parse_err(nl, "mem alloc failure in get_code()");
+			parse_err(nl, "make_code() failed");
 			return -1;
 		}
 		TAILQ_INSERT_TAIL(&ctx->cheat->codes, ctx->code, node);
