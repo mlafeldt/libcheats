@@ -1,8 +1,7 @@
-SET(CMAKE_C_FLAGS "-O2 -Wall -s")
+SET(CMAKE_C_FLAGS "-O2 -Wall")
 
 ADD_DEFINITIONS(-D_DEBUG)
 
 INCLUDE_DIRECTORIES(../include)
 
-SET(SRCS mystring.c cheatlist.c parser.c libcheats.c)
-ADD_LIBRARY(cheats SHARED ${SRCS})
+ADD_LIBRARY(cheats SHARED cheatlist.c mystring.c parser.c libcheats.c)

@@ -1,5 +1,5 @@
 /*
- * parser.c - Parse cheats from text files
+ * parser.c - Parse cheats in text format
  *
  * Copyright (C) 2009 misfire <misfire@xploderfreax.de>
  *
