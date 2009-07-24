@@ -19,8 +19,8 @@
  * along with libcheats.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <sys/types.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "cheatlist.h"
@@ -183,7 +183,7 @@ static code_t *__make_code(const char *s)
 {
 	char digits[CODE_DIGITS];
 	int i = 0;
-	u_int32_t addr, val;
+	uint32_t addr, val;
 
 	while (*s) {
 		if (isxdigit(*s))

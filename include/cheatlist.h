@@ -22,8 +22,8 @@
 #ifndef _CHEATLIST_H_
 #define _CHEATLIST_H_
 
-#include <sys/types.h>
 #include <sys/queue.h>
+#include <stdint.h>
 
 /* Max game title length */
 #define CL_TITLE_MAX	80
@@ -60,14 +60,14 @@
  * @tag: arbitrary information
  */
 typedef struct _code {
-	u_int32_t	addr;
-	u_int32_t	val;
-	u_int32_t	tag;
+	uint32_t	addr;
+	uint32_t	val;
+	uint32_t	tag;
 
 	TAILQ_ENTRY(_code) node;
 } code_t;
 
-typedef TAILQ_HEAD(codelist, _code) codelist_t;
+typedef TAILQ_HEAD(_codelist, _code) codelist_t;
 
 /**
  * cheat_t - a cheat object
@@ -78,12 +78,12 @@ typedef TAILQ_HEAD(codelist, _code) codelist_t;
 typedef struct _cheat {
 	char		desc[CL_DESC_MAX + 1];
 	codelist_t	codes;
-	u_int32_t	tag;
+	uint32_t	tag;
 
 	TAILQ_ENTRY(_cheat) node;
 } cheat_t;
 
-typedef TAILQ_HEAD(cheatlist, _cheat) cheatlist_t;
+typedef TAILQ_HEAD(_cheatlist, _cheat) cheatlist_t;
 
 /**
  * game_t - a game object
@@ -94,16 +94,16 @@ typedef TAILQ_HEAD(cheatlist, _cheat) cheatlist_t;
 typedef struct _game {
 	char		title[CL_TITLE_MAX + 1];
 	cheatlist_t	cheats;
-	u_int32_t	tag;
+	uint32_t	tag;
 
 	TAILQ_ENTRY(_game) node;
 } game_t;
 
-typedef TAILQ_HEAD(gamelist, _game) gamelist_t;
+typedef TAILQ_HEAD(_gamelist, _game) gamelist_t;
 
-extern code_t *make_code(u_int32_t addr, u_int32_t val, u_int32_t tag);
-extern cheat_t *make_cheat(const char *desc, codelist_t *codes, u_int32_t tag);
-extern game_t *make_game(const char *title, cheatlist_t *cheats, u_int32_t tag);
+extern code_t *make_code(uint32_t addr, uint32_t val, uint32_t tag);
+extern cheat_t *make_cheat(const char *desc, codelist_t *codes, uint32_t tag);
+extern game_t *make_game(const char *title, cheatlist_t *cheats, uint32_t tag);
 
 extern void remove_code(codelist_t *list, code_t *code, int _free);
 extern void remove_cheat(cheatlist_t *list, cheat_t *cheat, int _free);
