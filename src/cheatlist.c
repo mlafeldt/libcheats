@@ -59,6 +59,8 @@ cheat_t *make_cheat(const char *desc, codelist_t *codes, uint32_t tag)
 	if (cheat != NULL) {
 		if (desc != NULL)
 			strncpy(cheat->desc, desc, CHEAT_DESC_MAX);
+		else
+			strcpy(cheat->desc, "-");
 
 		CODES_INIT(&cheat->codes);
 		if (codes != NULL)
@@ -84,6 +86,8 @@ game_t *make_game(const char *title, cheatlist_t *cheats, uint32_t tag)
 	if (game != NULL) {
 		if (title != NULL)
 			strncpy(game->title, title, GAME_TITLE_MAX);
+		else
+			strcpy(game->title, "-");
 
 		CHEATS_INIT(&game->cheats);
 		if (cheats != NULL)
