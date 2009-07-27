@@ -263,7 +263,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 			parse_err(nl, "make_game() failed");
 			return -1;
 		}
-		GAMES_INSERT_TAIL(list, ctx->game, node);
+		GAMES_INSERT_TAIL(list, ctx->game);
 		break;
 
 	case TOK_CHEAT_DESC:

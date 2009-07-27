@@ -127,7 +127,7 @@ static inline void __remove_games(gamelist_t *list, int _free)
 
 	while ((game = GAMES_FIRST(list)) != NULL) {
 		__remove_cheats(&game->cheats, _free);
-		GAMES_REMOVE(list, game, _game, node);
+		GAMES_REMOVE(list, game);
 		if (_free)
 			free(game);
 	}
@@ -160,7 +160,7 @@ void remove_cheat(cheatlist_t *list, cheat_t *cheat, int _free)
 void remove_game(gamelist_t *list, game_t *game, int _free)
 {
 	__remove_cheats(&game->cheats, _free);
-	GAMES_REMOVE(list, game, _game, node);
+	GAMES_REMOVE(list, game);
 	if (_free)
 		free(game);
 }
@@ -208,7 +208,7 @@ game_t *find_game_by_title(const char *title, const gamelist_t *list)
 {
 	game_t *game;
 
-	GAMES_FOREACH(game, list, node) {
+	GAMES_FOREACH(game, list) {
 		if (!strcmp(game->title, title))
 			return game;
 	}

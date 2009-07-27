@@ -129,7 +129,7 @@ void cheats_write(cheats_t *cheats, FILE *stream)
 	cheat_t *cheat;
 	code_t *code;
 
-	GAMES_FOREACH(game, &cheats->games, node) {
+	GAMES_FOREACH(game, &cheats->games) {
 		fprintf(stream, "\"%s\"\n", game->title);
 		CHEATS_FOREACH(cheat, &game->cheats, node) {
 			fprintf(stream, "%s\n", cheat->desc);

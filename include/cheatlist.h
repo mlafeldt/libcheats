@@ -47,6 +47,7 @@
  * |- ...
  */
 
+#define FIELD	node
 
 /*
  * Code defines.
@@ -122,20 +123,21 @@ typedef STAILQ_HEAD(_cheatlist, _cheat) cheatlist_t;
 
 /*
  * Game defines.
+ *
+ * NOTE: Use remove_game() or free_games() to free allocated memory.
  */
-#define GAMES_HEAD_INITIALIZER	STAILQ_HEAD_INITIALIZER
-#define GAMES_INIT		STAILQ_INIT
-#define GAMES_INSERT_HEAD	STAILQ_INSERT_HEAD
-#define GAMES_INSERT_TAIL	STAILQ_INSERT_TAIL
-#define GAMES_INSERT_AFTER	STAILQ_INSERT_AFTER
-/* Use remove_game() or free_games() to also free allocated memory. */
-#define GAMES_REMOVE		STAILQ_REMOVE
-#define GAMES_REMOVE_HEAD	STAILQ_REMOVE_HEAD
-#define GAMES_FOREACH		STAILQ_FOREACH
-#define GAMES_CONCAT		STAILQ_CONCAT
-#define GAMES_EMPTY		STAILQ_EMPTY
-#define GAMES_FIRST		STAILQ_FIRST
-#define GAMES_NEXT		STAILQ_NEXT
+#define GAMES_HEAD_INITIALIZER(head)		STAILQ_HEAD_INITIALIZER(head)
+#define GAMES_INIT(head)			STAILQ_INIT(head)
+#define GAMES_INSERT_HEAD(head, elm)		STAILQ_INSERT_HEAD(head, elm, FIELD)
+#define GAMES_INSERT_TAIL(head, elm)		STAILQ_INSERT_TAIL(head, elm, FIELD)
+#define GAMES_INSERT_AFTER(head, listelm, elm)	STAILQ_INSERT_AFTER(head, listelm, elm, FIELD)
+#define GAMES_REMOVE(head, elm)			STAILQ_REMOVE(head, elm, _game, FIELD)
+#define GAMES_REMOVE_HEAD(head)			STAILQ_REMOVE_HEAD(head, FIELD)
+#define GAMES_FOREACH(var, head)		STAILQ_FOREACH(var, head, FIELD)
+#define GAMES_CONCAT(head1, head2)		STAILQ_CONCAT(head1, head2)
+#define GAMES_EMPTY(head)			STAILQ_EMPTY(head)
+#define GAMES_FIRST(head)			STAILQ_FIRST(head)
+#define GAMES_NEXT(elm)				STAILQ_NEXT(elm, FIELD)
 
 /* Max game title length */
 #define GAME_TITLE_MAX		80
