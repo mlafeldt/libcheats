@@ -25,15 +25,9 @@
 #include <sys/queue.h>
 #include <stdint.h>
 
-/* Max game title length */
-#define GAME_TITLE_MAX	80
-/* Max cheat description length */
-#define CHEAT_DESC_MAX	80
-
 /*
  * Here's how everything is organized.  The current implementation uses tail
- * queues to store games, cheats, and codes, so the TAILQ_* macros from
- * <sys/queue.h> are your friend.
+ * queues to store games, cheats, and codes.
  *
  * gamelist
  * |- game
@@ -111,6 +105,9 @@ typedef CODES_HEAD(_codelist, _code) codelist_t;
 #define CHEATS_NEXT		TAILQ_NEXT
 #define CHEATS_LAST		TAILQ_PREV
 
+/* Max cheat description length */
+#define CHEAT_DESC_MAX		80
+
 /**
  * cheat_t - a cheat object
  * @desc: cheat description
@@ -126,6 +123,7 @@ typedef struct _cheat {
 } cheat_t;
 
 typedef CHEATS_HEAD(_cheatlist, _cheat) cheatlist_t;
+
 
 /*
  * Game defines.
@@ -147,6 +145,9 @@ typedef CHEATS_HEAD(_cheatlist, _cheat) cheatlist_t;
 #define GAMES_NEXT		TAILQ_NEXT
 #define GAMES_LAST		TAILQ_PREV
 
+/* Max game title length */
+#define GAME_TITLE_MAX		80
+
 /**
  * game_t - a game object
  * @title: game title
@@ -164,7 +165,9 @@ typedef struct _game {
 typedef GAMES_HEAD(_gamelist, _game) gamelist_t;
 
 
-
+/*
+ * Some utility functions.
+ */
 extern code_t *make_code(uint32_t addr, uint32_t val, uint32_t tag);
 extern cheat_t *make_cheat(const char *desc, codelist_t *codes, uint32_t tag);
 extern game_t *make_game(const char *title, cheatlist_t *cheats, uint32_t tag);
