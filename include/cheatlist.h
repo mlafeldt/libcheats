@@ -101,6 +101,23 @@ typedef struct _game {
 
 typedef TAILQ_HEAD(_gamelist, _game) gamelist_t;
 
+
+#define GAMES_INIT		TAILQ_INIT
+#define GAMES_INSERT_HEAD	TAILQ_INSERT_HEAD
+#define GAMES_INSERT_TAIL	TAILQ_INSERT_TAIL
+#define GAMES_INSERT_AFTER	TAILQ_INSERT_AFTER
+#define GAMES_INSERT_BEFORE	TAILQ_INSERT_BEFORE
+#define GAMES_REMOVE		TAILQ_REMOVE
+#define GAMES_FOREACH		TAILQ_FOREACH
+#define GAMES_FOREACH_REVERSE	TAILQ_FOREACH_REVERSE
+#define GAMES_CONCAT		TAILQ_CONCAT
+
+#define GAMES_EMPTY		TAILQ_EMPTY
+#define GAMES_FIRST		TAILQ_FIRST
+#define GAMES_NEXT		TAILQ_NEXT
+#define GAMES_LAST		TAILQ_PREV
+
+
 extern code_t *make_code(uint32_t addr, uint32_t val, uint32_t tag);
 extern cheat_t *make_cheat(const char *desc, codelist_t *codes, uint32_t tag);
 extern game_t *make_game(const char *title, cheatlist_t *cheats, uint32_t tag);
