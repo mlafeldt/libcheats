@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cheatlist.h"
-#include "dbgprintf.h"
 
 /**
  * make_code - Create a new code object.
@@ -104,7 +103,6 @@ static inline void __remove_codes(codelist_t *list, int _free)
 	code_t *code;
 
 	while ((code = CODES_FIRST(list)) != NULL) {
-		D_PRINTF("free %08X %08X\n", code->addr, code->val);
 		CODES_REMOVE(list, code, node);
 		if (_free)
 			free(code);
@@ -116,7 +114,6 @@ static inline void __remove_cheats(cheatlist_t *list, int _free)
 	cheat_t *cheat;
 
 	while ((cheat = CHEATS_FIRST(list)) != NULL) {
-		D_PRINTF("free %s\n", cheat->desc);
 		__remove_codes(&cheat->codes, _free);
 		CHEATS_REMOVE(list, cheat, node);
 		if (_free)
@@ -129,7 +126,6 @@ static inline void __remove_games(gamelist_t *list, int _free)
 	game_t *game;
 
 	while ((game = GAMES_FIRST(list)) != NULL) {
-		D_PRINTF("free %s\n", game->title);
 		__remove_cheats(&game->cheats, _free);
 		GAMES_REMOVE(list, game, node);
 		if (_free)
