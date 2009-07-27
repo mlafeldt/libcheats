@@ -18,9 +18,9 @@ static void add_game(gamelist_t *list)
 	CHEATS_INSERT_TAIL(&game->cheats, cheat);
 
 	code = make_code(0x123, 0x456, 0);
-	CODES_INSERT_TAIL(&cheat->codes, code, node);
+	CODES_INSERT_TAIL(&cheat->codes, code);
 	code = make_code(0x789, 0, 0);
-	CODES_INSERT_TAIL(&cheat->codes, code, node);
+	CODES_INSERT_TAIL(&cheat->codes, code);
 	remove_code(&cheat->codes, code, 1);
 }
 
@@ -35,7 +35,7 @@ static void add_game2(gamelist_t *list)
 
 	for (i = 0; i < 5; i++) {
 		code = make_code(0x12345678, i, 0);
-		CODES_INSERT_TAIL(&codes, code, node);
+		CODES_INSERT_TAIL(&codes, code);
 	}
 
 	cheat = make_cheat("Inf. Bar 2", &codes, 0);

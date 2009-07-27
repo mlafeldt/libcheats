@@ -281,7 +281,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 			parse_err(nl, "make_code() failed");
 			return -1;
 		}
-		CODES_INSERT_TAIL(&ctx->cheat->codes, ctx->code, node);
+		CODES_INSERT_TAIL(&ctx->cheat->codes, ctx->code);
 		break;
 	}
 

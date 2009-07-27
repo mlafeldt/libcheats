@@ -51,21 +51,22 @@
 
 /*
  * Code defines.
- * TODO: use list instead of tail queue.
+ *
+ * NOTE: Use remove_code() or free_codes() to free allocated memory.
+ * TODO: Use list instead of tail queue.
  */
-#define CODES_HEAD_INITIALIZER	STAILQ_HEAD_INITIALIZER
-#define CODES_INIT		STAILQ_INIT
-#define CODES_INSERT_HEAD	STAILQ_INSERT_HEAD
-#define CODES_INSERT_TAIL	STAILQ_INSERT_TAIL
-#define CODES_INSERT_AFTER	STAILQ_INSERT_AFTER
-/* Use remove_code() or free_codes() to also free allocated memory. */
-#define CODES_REMOVE		STAILQ_REMOVE
-#define CODES_REMOVE_HEAD	STAILQ_REMOVE_HEAD
-#define CODES_FOREACH		STAILQ_FOREACH
-#define CODES_CONCAT		STAILQ_CONCAT
-#define CODES_EMPTY		STAILQ_EMPTY
-#define CODES_FIRST		STAILQ_FIRST
-#define CODES_NEXT		STAILQ_NEXT
+#define CODES_HEAD_INITIALIZER(head)		STAILQ_HEAD_INITIALIZER(head)
+#define CODES_INIT(head)			STAILQ_INIT(head)
+#define CODES_INSERT_HEAD(head, elm)		STAILQ_INSERT_HEAD(head, elm, FIELD)
+#define CODES_INSERT_TAIL(head, elm)		STAILQ_INSERT_TAIL(head, elm, FIELD)
+#define CODES_INSERT_AFTER(head, listelm, elm)	STAILQ_INSERT_AFTER(head, listelm, elm, FIELD)
+#define CODES_REMOVE(head, elm)			STAILQ_REMOVE(head, elm, _code, FIELD)
+#define CODES_REMOVE_HEAD(head)			STAILQ_REMOVE_HEAD(head, FIELD)
+#define CODES_FOREACH(var, head)		STAILQ_FOREACH(var, head, FIELD)
+#define CODES_CONCAT(head1, head2)		STAILQ_CONCAT(head1, head2)
+#define CODES_EMPTY(head)			STAILQ_EMPTY(head)
+#define CODES_FIRST(head)			STAILQ_FIRST(head)
+#define CODES_NEXT(elm)				STAILQ_NEXT(elm, FIELD)
 
 /**
  * code_t - a code object
@@ -78,7 +79,7 @@ typedef struct _code {
 	uint32_t	val;
 	uint32_t	tag;
 
-	STAILQ_ENTRY(_code) node;
+	STAILQ_ENTRY(_code) FIELD;
 } code_t;
 
 typedef STAILQ_HEAD(_codelist, _code) codelist_t;
@@ -116,7 +117,7 @@ typedef struct _cheat {
 	codelist_t	codes;
 	uint32_t	tag;
 
-	STAILQ_ENTRY(_cheat) node;
+	STAILQ_ENTRY(_cheat) FIELD;
 } cheat_t;
 
 typedef STAILQ_HEAD(_cheatlist, _cheat) cheatlist_t;
@@ -154,7 +155,7 @@ typedef struct _game {
 	cheatlist_t	cheats;
 	uint32_t	tag;
 
-	STAILQ_ENTRY(_game) node;
+	STAILQ_ENTRY(_game) FIELD;
 } game_t;
 
 typedef STAILQ_HEAD(_gamelist, _game) gamelist_t;

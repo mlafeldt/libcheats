@@ -103,7 +103,7 @@ static inline void __remove_codes(codelist_t *list, int _free)
 	code_t *code;
 
 	while ((code = CODES_FIRST(list)) != NULL) {
-		CODES_REMOVE(list, code, _code, node);
+		CODES_REMOVE(list, code);
 		if (_free)
 			free(code);
 	}
@@ -138,7 +138,7 @@ static inline void __remove_games(gamelist_t *list, int _free)
  */
 void remove_code(codelist_t *list, code_t *code, int _free)
 {
-	CODES_REMOVE(list, code, _code, node);
+	CODES_REMOVE(list, code);
 	if (_free)
 		free(code);
 }
