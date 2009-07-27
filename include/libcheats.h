@@ -54,7 +54,7 @@ extern int cheats_read(cheats_t *cheats, FILE *stream);
 extern int cheats_read_file(cheats_t *cheats, const char *filename);
 extern int cheats_read_buf(cheats_t *cheats, const char *buf);
 
-extern int cheats_write(cheats_t *cheats, FILE *stream);
+extern void cheats_write(cheats_t *cheats, FILE *stream);
 extern int cheats_write_file(cheats_t *cheats, const char *filename);
 
 extern const char *cheats_error_text(const cheats_t *cheats);

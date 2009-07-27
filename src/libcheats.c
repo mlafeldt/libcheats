@@ -32,10 +32,8 @@
  */
 void cheats_init(cheats_t *cheats)
 {
-	if (cheats != NULL) {
-		memset(cheats, 0, sizeof(cheats_t));
-		GAMES_INIT(&cheats->games);
-	}
+	memset(cheats, 0, sizeof(cheats_t));
+	GAMES_INIT(&cheats->games);
 }
 
 /**
@@ -45,10 +43,8 @@ void cheats_init(cheats_t *cheats)
  */
 void cheats_destroy(cheats_t *cheats)
 {
-	if (cheats != NULL) {
-		free_games(&cheats->games);
-		memset(cheats, 0, sizeof(cheats_t));
-	}
+	free_games(&cheats->games);
+	memset(cheats, 0, sizeof(cheats_t));
 }
 
 /**
@@ -62,9 +58,6 @@ void cheats_destroy(cheats_t *cheats)
  */
 int cheats_read(cheats_t *cheats, FILE *stream)
 {
-	if (cheats == NULL || stream == NULL)
-		return CHEATS_FALSE;
-
 	cheats_destroy(cheats);
 	cheats_init(cheats);
 
@@ -72,11 +65,9 @@ int cheats_read(cheats_t *cheats, FILE *stream)
 		strcpy(cheats->error_text, parse_error_text);
 		cheats->error_line = parse_error_line;
 		return CHEATS_FALSE;
-	} else {
-		cheats->error_text[0] = '\0';
-		cheats->error_line = 0;
-		return CHEATS_TRUE;
 	}
+
+	return CHEATS_TRUE;
 }
 
 /**
@@ -92,9 +83,6 @@ int cheats_read_file(cheats_t *cheats, const char *filename)
 {
 	FILE *fp;
 	int ret;
-
-	if (cheats == NULL || filename == NULL)
-		return CHEATS_FALSE;
 
 	fp = fopen(filename, "r");
 	if (fp == NULL) {
@@ -118,9 +106,6 @@ int cheats_read_file(cheats_t *cheats, const char *filename)
  */
 int cheats_read_buf(cheats_t *cheats, const char *buf)
 {
-	if (cheats == NULL || buf == NULL)
-		return CHEATS_FALSE;
-
 	cheats_destroy(cheats);
 	cheats_init(cheats);
 
@@ -128,11 +113,9 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
 		strcpy(cheats->error_text, parse_error_text);
 		cheats->error_line = parse_error_line;
 		return CHEATS_FALSE;
-	} else {
-		cheats->error_text[0] = '\0';
-		cheats->error_line = 0;
-		return CHEATS_TRUE;
 	}
+
+	return CHEATS_TRUE;
 }
 
 /**
@@ -141,14 +124,11 @@ int cheats_read_buf(cheats_t *cheats, const char *buf)
  * @stream: stream to write cheats to
  * @return: CHEATS_TRUE: success, CHEATS_FALSE: error
  */
-int cheats_write(cheats_t *cheats, FILE *stream)
+void cheats_write(cheats_t *cheats, FILE *stream)
 {
 	game_t *game;
 	cheat_t *cheat;
 	code_t *code;
-
-	if (cheats == NULL || stream == NULL)
-		return CHEATS_FALSE;
 
 	GAMES_FOREACH(game, &cheats->games, node) {
 		fprintf(stream, "\"%s\"\n", game->title);
@@ -160,8 +140,6 @@ int cheats_write(cheats_t *cheats, FILE *stream)
 		}
 		fprintf(stream, "\n//--------\n\n");
 	}
-
-	return CHEATS_TRUE;
 }
 
 /**
@@ -169,14 +147,13 @@ int cheats_write(cheats_t *cheats, FILE *stream)
  * @cheats: cheats objects
  * @filename: name of file to write cheats to
  * @return: CHEATS_TRUE: success, CHEATS_FALSE: error
+ *
+ * The function cheats_error_text() can be used to obtain more information about
+ * an error.
  */
 int cheats_write_file(cheats_t *cheats, const char *filename)
 {
 	FILE *fp;
-	int ret;
-
-	if (cheats == NULL || filename == NULL)
-		return CHEATS_FALSE;
 
 	fp = fopen(filename, "w");
 	if (fp == NULL) {
@@ -184,9 +161,9 @@ int cheats_write_file(cheats_t *cheats, const char *filename)
 		return CHEATS_FALSE;
 	}
 
-	ret = cheats_write(cheats, fp);
+	cheats_write(cheats, fp);
 	fclose(fp);
-	return ret;
+	return CHEATS_TRUE;
 }
 
 /**
@@ -196,9 +173,6 @@ int cheats_write_file(cheats_t *cheats, const char *filename)
  */
 const char *cheats_error_text(const cheats_t *cheats)
 {
-	if (cheats == NULL)
-		return NULL;
-
 	return cheats->error_text;
 }
 
@@ -209,8 +183,5 @@ const char *cheats_error_text(const cheats_t *cheats)
  */
 int cheats_error_line(const cheats_t *cheats)
 {
-	if (cheats == NULL)
-		return -1;
-
 	return cheats->error_line;
 }
