@@ -22,8 +22,7 @@
 #ifndef _CHEATLIST_H_
 #define _CHEATLIST_H_
 
-#include <sys/queue.h>
-#include <stdint.h>
+#include "libcheats_compat.h"
 
 /*
  * Here's how everything is organized.  The current implementation uses single-
