@@ -47,7 +47,18 @@
  * |- ...
  */
 
-#define FIELD	node
+/*
+ * Some helper macros.
+ */
+#define _FIELD	node
+#define _STAILQ_INSERT_HEAD(h, e)	STAILQ_INSERT_HEAD(h, e, _FIELD)
+#define _STAILQ_INSERT_TAIL(h, e)	STAILQ_INSERT_TAIL(h, e, _FIELD)
+#define _STAILQ_INSERT_AFTER(h, l, e)	STAILQ_INSERT_AFTER(h, l, e, _FIELD)
+#define _STAILQ_REMOVE(h, e, t)		STAILQ_REMOVE(h, e, t, _FIELD)
+#define _STAILQ_REMOVE_HEAD(h)		STAILQ_REMOVE_HEAD(h, _FIELD)
+#define _STAILQ_FOREACH(v, h)		STAILQ_FOREACH(v, h, _FIELD)
+#define _STAILQ_NEXT(e)			STAILQ_NEXT(e, _FIELD)
+
 
 /*
  * Code defines.
@@ -57,16 +68,16 @@
  */
 #define CODES_HEAD_INITIALIZER(head)		STAILQ_HEAD_INITIALIZER(head)
 #define CODES_INIT(head)			STAILQ_INIT(head)
-#define CODES_INSERT_HEAD(head, elm)		STAILQ_INSERT_HEAD(head, elm, FIELD)
-#define CODES_INSERT_TAIL(head, elm)		STAILQ_INSERT_TAIL(head, elm, FIELD)
-#define CODES_INSERT_AFTER(head, listelm, elm)	STAILQ_INSERT_AFTER(head, listelm, elm, FIELD)
-#define CODES_REMOVE(head, elm)			STAILQ_REMOVE(head, elm, _code, FIELD)
-#define CODES_REMOVE_HEAD(head)			STAILQ_REMOVE_HEAD(head, FIELD)
-#define CODES_FOREACH(var, head)		STAILQ_FOREACH(var, head, FIELD)
+#define CODES_INSERT_HEAD(head, elm)		_STAILQ_INSERT_HEAD(head, elm)
+#define CODES_INSERT_TAIL(head, elm)		_STAILQ_INSERT_TAIL(head, elm)
+#define CODES_INSERT_AFTER(head, listelm, elm)	_STAILQ_INSERT_AFTER(head, listelm, elm)
+#define CODES_REMOVE(head, elm)			_STAILQ_REMOVE(head, elm, _code)
+#define CODES_REMOVE_HEAD(head)			_STAILQ_REMOVE_HEAD(head)
+#define CODES_FOREACH(var, head)		_STAILQ_FOREACH(var, head)
 #define CODES_CONCAT(head1, head2)		STAILQ_CONCAT(head1, head2)
 #define CODES_EMPTY(head)			STAILQ_EMPTY(head)
 #define CODES_FIRST(head)			STAILQ_FIRST(head)
-#define CODES_NEXT(elm)				STAILQ_NEXT(elm, FIELD)
+#define CODES_NEXT(elm)				_STAILQ_NEXT(elm)
 
 /**
  * code_t - a code object
@@ -79,7 +90,7 @@ typedef struct _code {
 	uint32_t	val;
 	uint32_t	tag;
 
-	STAILQ_ENTRY(_code) FIELD;
+	STAILQ_ENTRY(_code) _FIELD;
 } code_t;
 
 typedef STAILQ_HEAD(_codelist, _code) codelist_t;
@@ -92,16 +103,16 @@ typedef STAILQ_HEAD(_codelist, _code) codelist_t;
  */
 #define CHEATS_HEAD_INITIALIZER(head)		STAILQ_HEAD_INITIALIZER(head)
 #define CHEATS_INIT(head)			STAILQ_INIT(head)
-#define CHEATS_INSERT_HEAD(head, elm)		STAILQ_INSERT_HEAD(head, elm, FIELD)
-#define CHEATS_INSERT_TAIL(head, elm)		STAILQ_INSERT_TAIL(head, elm, FIELD)
-#define CHEATS_INSERT_AFTER(head, listelm, elm)	STAILQ_INSERT_AFTER(head, listelm, elm, FIELD)
-#define CHEATS_REMOVE(head, elm)		STAILQ_REMOVE(head, elm, _cheat, FIELD)
-#define CHEATS_REMOVE_HEAD(head)		STAILQ_REMOVE_HEAD(head, FIELD)
-#define CHEATS_FOREACH(var, head)		STAILQ_FOREACH(var, head, FIELD)
+#define CHEATS_INSERT_HEAD(head, elm)		_STAILQ_INSERT_HEAD(head, elm)
+#define CHEATS_INSERT_TAIL(head, elm)		_STAILQ_INSERT_TAIL(head, elm)
+#define CHEATS_INSERT_AFTER(head, listelm, elm)	_STAILQ_INSERT_AFTER(head, listelm, elm)
+#define CHEATS_REMOVE(head, elm)		_STAILQ_REMOVE(head, elm, _cheat)
+#define CHEATS_REMOVE_HEAD(head)		_STAILQ_REMOVE_HEAD(head)
+#define CHEATS_FOREACH(var, head)		_STAILQ_FOREACH(var, head)
 #define CHEATS_CONCAT(head1, head2)		STAILQ_CONCAT(head1, head2)
 #define CHEATS_EMPTY(head)			STAILQ_EMPTY(head)
 #define CHEATS_FIRST(head)			STAILQ_FIRST(head)
-#define CHEATS_NEXT(elm)			STAILQ_NEXT(elm, FIELD)
+#define CHEATS_NEXT(elm)			_STAILQ_NEXT(elm)
 
 /* Max cheat description length */
 #define CHEAT_DESC_MAX		80
@@ -117,7 +128,7 @@ typedef struct _cheat {
 	codelist_t	codes;
 	uint32_t	tag;
 
-	STAILQ_ENTRY(_cheat) FIELD;
+	STAILQ_ENTRY(_cheat) _FIELD;
 } cheat_t;
 
 typedef STAILQ_HEAD(_cheatlist, _cheat) cheatlist_t;
@@ -130,16 +141,16 @@ typedef STAILQ_HEAD(_cheatlist, _cheat) cheatlist_t;
  */
 #define GAMES_HEAD_INITIALIZER(head)		STAILQ_HEAD_INITIALIZER(head)
 #define GAMES_INIT(head)			STAILQ_INIT(head)
-#define GAMES_INSERT_HEAD(head, elm)		STAILQ_INSERT_HEAD(head, elm, FIELD)
-#define GAMES_INSERT_TAIL(head, elm)		STAILQ_INSERT_TAIL(head, elm, FIELD)
-#define GAMES_INSERT_AFTER(head, listelm, elm)	STAILQ_INSERT_AFTER(head, listelm, elm, FIELD)
-#define GAMES_REMOVE(head, elm)			STAILQ_REMOVE(head, elm, _game, FIELD)
-#define GAMES_REMOVE_HEAD(head)			STAILQ_REMOVE_HEAD(head, FIELD)
-#define GAMES_FOREACH(var, head)		STAILQ_FOREACH(var, head, FIELD)
+#define GAMES_INSERT_HEAD(head, elm)		_STAILQ_INSERT_HEAD(head, elm)
+#define GAMES_INSERT_TAIL(head, elm)		_STAILQ_INSERT_TAIL(head, elm)
+#define GAMES_INSERT_AFTER(head, listelm, elm)	_STAILQ_INSERT_AFTER(head, listelm, elm)
+#define GAMES_REMOVE(head, elm)			_STAILQ_REMOVE(head, elm, _game)
+#define GAMES_REMOVE_HEAD(head)			_STAILQ_REMOVE_HEAD(head)
+#define GAMES_FOREACH(var, head)		_STAILQ_FOREACH(var, head)
 #define GAMES_CONCAT(head1, head2)		STAILQ_CONCAT(head1, head2)
 #define GAMES_EMPTY(head)			STAILQ_EMPTY(head)
 #define GAMES_FIRST(head)			STAILQ_FIRST(head)
-#define GAMES_NEXT(elm)				STAILQ_NEXT(elm, FIELD)
+#define GAMES_NEXT(elm)				_STAILQ_NEXT(elm)
 
 /* Max game title length */
 #define GAME_TITLE_MAX		80
@@ -155,7 +166,7 @@ typedef struct _game {
 	cheatlist_t	cheats;
 	uint32_t	tag;
 
-	STAILQ_ENTRY(_game) FIELD;
+	STAILQ_ENTRY(_game) _FIELD;
 } game_t;
 
 typedef STAILQ_HEAD(_gamelist, _game) gamelist_t;
