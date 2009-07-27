@@ -1,0 +1,69 @@
+---=======================---
+   libcheats
+   Copyright (C) 2009 misfire
+---==========================---
+
+
+Welcome to libcheats! This library allows you to read, manipulate, and write
+cheat codes in text format.
+
+
+---============---
+   Version history
+---===============---
+
+v1.0 (Jul xx 2009)
+* Initial public release
+
+
+---============---
+   About libcheats
+---===============---
+
+TODO
+
+
+---==---
+   Build
+---=====---
+
+To compile libcheats, you need CMake and a C compiler like gcc.
+I recommend doing an out-of-source build:
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+
+To install libcheats:
+# make install
+
+
+---==---
+   Usage
+---=====---
+
+TODO
+
+
+---=======---
+   Disclaimer
+---==========---
+
+libcheats comes with ABSOLUTELY NO WARRANTY. It is covered by the GNU Lesser
+General Public License. Please see files COPYING and COPYING.LESSER for further
+information.
+
+
+---====---
+   Contact
+---=======---
+
+misfire [AT] xploderfreax [DOT] de
+
+If you enjoy libcheats, please consider a PayPal donation to my e-mail address
+above. Thank you.
+
+
+---======================---
+   HACKING NEEDS TO BE FREE!
+---=========================---
