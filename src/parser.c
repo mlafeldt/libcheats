@@ -256,7 +256,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 			parse_err(nl, "make_game() failed");
 			return -1;
 		}
-		TAILQ_INSERT_TAIL(list, ctx->game, node);
+		GAMES_INSERT_TAIL(list, ctx->game, node);
 		break;
 
 	case TOK_CHEAT_DESC:
@@ -265,7 +265,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 			parse_err(nl, "make_cheat() failed");
 			return -1;
 		}
-		TAILQ_INSERT_TAIL(&ctx->game->cheats, ctx->cheat, node);
+		CHEATS_INSERT_TAIL(&ctx->game->cheats, ctx->cheat, node);
 		break;
 
 	case TOK_CHEAT_CODE:
@@ -274,7 +274,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 			parse_err(nl, "make_code() failed");
 			return -1;
 		}
-		TAILQ_INSERT_TAIL(&ctx->cheat->codes, ctx->code, node);
+		CODES_INSERT_TAIL(&ctx->cheat->codes, ctx->code, node);
 		break;
 	}
 

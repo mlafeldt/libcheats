@@ -19,7 +19,6 @@
  * along with libcheats.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <sys/queue.h>
 #include <stdio.h>
 #include <string.h>
 #include "cheatlist.h"
@@ -35,7 +34,7 @@ void cheats_init(cheats_t *cheats)
 {
 	if (cheats != NULL) {
 		memset(cheats, 0, sizeof(cheats_t));
-		TAILQ_INIT(&cheats->games);
+		GAMES_INIT(&cheats->games);
 	}
 }
 
@@ -151,11 +150,11 @@ int cheats_write(cheats_t *cheats, FILE *stream)
 	if (cheats == NULL || stream == NULL)
 		return CHEATS_FALSE;
 
-	TAILQ_FOREACH(game, &cheats->games, node) {
+	GAMES_FOREACH(game, &cheats->games, node) {
 		fprintf(stream, "\"%s\"\n", game->title);
-		TAILQ_FOREACH(cheat, &game->cheats, node) {
+		CHEATS_FOREACH(cheat, &game->cheats, node) {
 			fprintf(stream, "%s\n", cheat->desc);
-			TAILQ_FOREACH(code, &cheat->codes, node) {
+			CODES_FOREACH(code, &cheat->codes, node) {
 				fprintf(stream, "%08X %08X\n", code->addr, code->val);
 			}
 		}

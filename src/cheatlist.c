@@ -19,7 +19,6 @@
  * along with libcheats.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <sys/queue.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -61,9 +60,9 @@ cheat_t *make_cheat(const char *desc, codelist_t *codes, uint32_t tag)
 		if (desc != NULL)
 			strncpy(cheat->desc, desc, CHEAT_DESC_MAX);
 
-		TAILQ_INIT(&cheat->codes);
+		CODES_INIT(&cheat->codes);
 		if (codes != NULL)
-			TAILQ_CONCAT(&cheat->codes, codes, node);
+			CODES_CONCAT(&cheat->codes, codes, node);
 
 		cheat->tag = tag;
 	}
@@ -86,9 +85,9 @@ game_t *make_game(const char *title, cheatlist_t *cheats, uint32_t tag)
 		if (title != NULL)
 			strncpy(game->title, title, GAME_TITLE_MAX);
 
-		TAILQ_INIT(&game->cheats);
+		CHEATS_INIT(&game->cheats);
 		if (cheats != NULL)
-			TAILQ_CONCAT(&game->cheats, cheats, node);
+			CHEATS_CONCAT(&game->cheats, cheats, node);
 
 		game->tag = tag;
 	}
@@ -96,20 +95,13 @@ game_t *make_game(const char *title, cheatlist_t *cheats, uint32_t tag)
 	return game;
 }
 
-#if 0
-void add_code(codelist_t *list, code_t *code)
-{
-	TAILQ_INSERT_TAIL(list, code, node);
-}
-#endif
-
 static inline void __remove_codes(codelist_t *list, int _free)
 {
 	code_t *code;
 
-	while ((code = TAILQ_FIRST(list)) != NULL) {
+	while ((code = CODES_FIRST(list)) != NULL) {
 		D_PRINTF("free %08X %08X\n", code->addr, code->val);
-		TAILQ_REMOVE(list, code, node);
+		CODES_REMOVE(list, code, node);
 		if (_free)
 			free(code);
 	}
@@ -119,10 +111,10 @@ static inline void __remove_cheats(cheatlist_t *list, int _free)
 {
 	cheat_t *cheat;
 
-	while ((cheat = TAILQ_FIRST(list)) != NULL) {
+	while ((cheat = CHEATS_FIRST(list)) != NULL) {
 		D_PRINTF("free %s\n", cheat->desc);
 		__remove_codes(&cheat->codes, _free);
-		TAILQ_REMOVE(list, cheat, node);
+		CHEATS_REMOVE(list, cheat, node);
 		if (_free)
 			free(cheat);
 	}
@@ -132,10 +124,10 @@ static inline void __remove_games(gamelist_t *list, int _free)
 {
 	game_t *game;
 
-	while ((game = TAILQ_FIRST(list)) != NULL) {
+	while ((game = GAMES_FIRST(list)) != NULL) {
 		D_PRINTF("free %s\n", game->title);
 		__remove_cheats(&game->cheats, _free);
-		TAILQ_REMOVE(list, game, node);
+		GAMES_REMOVE(list, game, node);
 		if (_free)
 			free(game);
 	}
@@ -146,7 +138,7 @@ static inline void __remove_games(gamelist_t *list, int _free)
  */
 void remove_code(codelist_t *list, code_t *code, int _free)
 {
-	TAILQ_REMOVE(list, code, node);
+	CODES_REMOVE(list, code, node);
 	if (_free)
 		free(code);
 }
@@ -157,7 +149,7 @@ void remove_code(codelist_t *list, code_t *code, int _free)
 void remove_cheat(cheatlist_t *list, cheat_t *cheat, int _free)
 {
 	__remove_codes(&cheat->codes, _free);
-	TAILQ_REMOVE(list, cheat, node);
+	CHEATS_REMOVE(list, cheat, node);
 	if (_free)
 		free(cheat);
 }
@@ -168,7 +160,7 @@ void remove_cheat(cheatlist_t *list, cheat_t *cheat, int _free)
 void remove_game(gamelist_t *list, game_t *game, int _free)
 {
 	__remove_cheats(&game->cheats, _free);
-	TAILQ_REMOVE(list, game, node);
+	CHEATS_REMOVE(list, game, node);
 	if (_free)
 		free(game);
 }
@@ -216,7 +208,7 @@ game_t *find_game_by_title(const char *title, const gamelist_t *list)
 {
 	game_t *game;
 
-	TAILQ_FOREACH(game, list, node) {
+	GAMES_FOREACH(game, list, node) {
 		if (!strcmp(game->title, title))
 			return game;
 	}
