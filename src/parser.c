@@ -19,10 +19,12 @@
  * along with libcheats.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <ctype.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "cheatlist.h"
 #include "dbgprintf.h"
 #include "mystring.h"
