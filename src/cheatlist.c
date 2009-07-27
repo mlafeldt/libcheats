@@ -63,7 +63,7 @@ cheat_t *make_cheat(const char *desc, codelist_t *codes, uint32_t tag)
 
 		CODES_INIT(&cheat->codes);
 		if (codes != NULL)
-			CODES_CONCAT(&cheat->codes, codes, node);
+			CODES_CONCAT(&cheat->codes, codes);
 
 		cheat->tag = tag;
 	}
@@ -103,7 +103,7 @@ static inline void __remove_codes(codelist_t *list, int _free)
 	code_t *code;
 
 	while ((code = CODES_FIRST(list)) != NULL) {
-		CODES_REMOVE(list, code, node);
+		CODES_REMOVE(list, code, _code, node);
 		if (_free)
 			free(code);
 	}
@@ -138,7 +138,7 @@ static inline void __remove_games(gamelist_t *list, int _free)
  */
 void remove_code(codelist_t *list, code_t *code, int _free)
 {
-	CODES_REMOVE(list, code, node);
+	CODES_REMOVE(list, code, _code, node);
 	if (_free)
 		free(code);
 }

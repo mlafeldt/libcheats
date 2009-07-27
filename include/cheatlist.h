@@ -26,8 +26,8 @@
 #include <stdint.h>
 
 /*
- * Here's how everything is organized.  The current implementation uses tail
- * queues to store games, cheats, and codes.
+ * Here's how everything is organized.  The current implementation uses single-
+ * linked tail queues to store games, cheats, and codes.
  *
  * gamelist
  * |- game
@@ -50,23 +50,23 @@
 
 /*
  * Code defines.
+ * TODO: use list instead of tail queue.
  */
-#define CODES_HEAD		TAILQ_HEAD
-#define CODES_HEAD_INITIALIZER	TAILQ_HEAD_INITIALIZER
-#define CODES_ENTRY		TAILQ_ENTRY
-#define CODES_INIT		TAILQ_INIT
-#define CODES_INSERT_HEAD	TAILQ_INSERT_HEAD
-#define CODES_INSERT_TAIL	TAILQ_INSERT_TAIL
-#define CODES_INSERT_AFTER	TAILQ_INSERT_AFTER
-#define CODES_INSERT_BEFORE	TAILQ_INSERT_BEFORE
+#define CODES_HEAD		STAILQ_HEAD
+#define CODES_HEAD_INITIALIZER	STAILQ_HEAD_INITIALIZER
+#define CODES_ENTRY		STAILQ_ENTRY
+#define CODES_INIT		STAILQ_INIT
+#define CODES_INSERT_HEAD	STAILQ_INSERT_HEAD
+#define CODES_INSERT_TAIL	STAILQ_INSERT_TAIL
+#define CODES_INSERT_AFTER	STAILQ_INSERT_AFTER
 /* Use remove_code() or free_codes() to also free allocated memory. */
-#define CODES_REMOVE		TAILQ_REMOVE
-#define CODES_FOREACH		TAILQ_FOREACH
-#define CODES_FOREACH_REVERSE	TAILQ_FOREACH_REVERSE
-#define CODES_CONCAT		TAILQ_CONCAT
-#define CODES_EMPTY		TAILQ_EMPTY
-#define CODES_FIRST		TAILQ_FIRST
-#define CODES_NEXT		TAILQ_NEXT
+#define CODES_REMOVE		STAILQ_REMOVE
+#define CODES_REMOVE_HEAD	STAILQ_REMOVE_HEAD
+#define CODES_FOREACH		STAILQ_FOREACH
+#define CODES_CONCAT		STAILQ_CONCAT
+#define CODES_EMPTY		STAILQ_EMPTY
+#define CODES_FIRST		STAILQ_FIRST
+#define CODES_NEXT		STAILQ_NEXT
 
 /**
  * code_t - a code object
