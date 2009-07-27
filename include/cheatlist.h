@@ -52,9 +52,7 @@
  * Code defines.
  * TODO: use list instead of tail queue.
  */
-#define CODES_HEAD		STAILQ_HEAD
 #define CODES_HEAD_INITIALIZER	STAILQ_HEAD_INITIALIZER
-#define CODES_ENTRY		STAILQ_ENTRY
 #define CODES_INIT		STAILQ_INIT
 #define CODES_INSERT_HEAD	STAILQ_INSERT_HEAD
 #define CODES_INSERT_TAIL	STAILQ_INSERT_TAIL
@@ -79,18 +77,16 @@ typedef struct _code {
 	uint32_t	val;
 	uint32_t	tag;
 
-	CODES_ENTRY(_code) node;
+	STAILQ_ENTRY(_code) node;
 } code_t;
 
-typedef CODES_HEAD(_codelist, _code) codelist_t;
+typedef STAILQ_HEAD(_codelist, _code) codelist_t;
 
 
 /*
  * Cheat defines.
  */
-#define CHEATS_HEAD		STAILQ_HEAD
 #define CHEATS_HEAD_INITIALIZER	STAILQ_HEAD_INITIALIZER
-#define CHEATS_ENTRY		STAILQ_ENTRY
 #define CHEATS_INIT		STAILQ_INIT
 #define CHEATS_INSERT_HEAD	STAILQ_INSERT_HEAD
 #define CHEATS_INSERT_TAIL	STAILQ_INSERT_TAIL
@@ -118,18 +114,16 @@ typedef struct _cheat {
 	codelist_t	codes;
 	uint32_t	tag;
 
-	CHEATS_ENTRY(_cheat) node;
+	STAILQ_ENTRY(_cheat) node;
 } cheat_t;
 
-typedef CHEATS_HEAD(_cheatlist, _cheat) cheatlist_t;
+typedef STAILQ_HEAD(_cheatlist, _cheat) cheatlist_t;
 
 
 /*
  * Game defines.
  */
-#define GAMES_HEAD		STAILQ_HEAD
 #define GAMES_HEAD_INITIALIZER	STAILQ_HEAD_INITIALIZER
-#define GAMES_ENTRY		STAILQ_ENTRY
 #define GAMES_INIT		STAILQ_INIT
 #define GAMES_INSERT_HEAD	STAILQ_INSERT_HEAD
 #define GAMES_INSERT_TAIL	STAILQ_INSERT_TAIL
@@ -157,10 +151,10 @@ typedef struct _game {
 	cheatlist_t	cheats;
 	uint32_t	tag;
 
-	GAMES_ENTRY(_game) node;
+	STAILQ_ENTRY(_game) node;
 } game_t;
 
-typedef GAMES_HEAD(_gamelist, _game) gamelist_t;
+typedef STAILQ_HEAD(_gamelist, _game) gamelist_t;
 
 
 /*
