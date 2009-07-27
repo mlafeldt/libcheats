@@ -59,7 +59,7 @@ cheat_t *make_cheat(const char *desc, codelist_t *codes, uint32_t tag)
 
 	if (cheat != NULL) {
 		if (desc != NULL)
-			strncpy(cheat->desc, desc, CL_DESC_MAX);
+			strncpy(cheat->desc, desc, CHEAT_DESC_MAX);
 
 		TAILQ_INIT(&cheat->codes);
 		if (codes != NULL)
@@ -84,7 +84,7 @@ game_t *make_game(const char *title, cheatlist_t *cheats, uint32_t tag)
 
 	if (game != NULL) {
 		if (title != NULL)
-			strncpy(game->title, title, CL_TITLE_MAX);
+			strncpy(game->title, title, GAME_TITLE_MAX);
 
 		TAILQ_INIT(&game->cheats);
 		if (cheats != NULL)

@@ -159,7 +159,7 @@ static int next_token(int tok)
  */
 static game_t *__make_game(const char *title)
 {
-	char buf[CL_TITLE_MAX + 1];
+	char buf[GAME_TITLE_MAX + 1];
 
 	/* Remove leading and trailing quotes from game title */
 	strncpy(buf, title + 1, strlen(title) - 2);

@@ -26,9 +26,9 @@
 #include <stdint.h>
 
 /* Max game title length */
-#define CL_TITLE_MAX	80
+#define GAME_TITLE_MAX	80
 /* Max cheat description length */
-#define CL_DESC_MAX	80
+#define CHEAT_DESC_MAX	80
 
 /*
  * Here's how everything is organized.  The current implementation uses tail
@@ -53,6 +53,27 @@
  * |- ...
  */
 
+
+/*
+ * Code defines.
+ */
+#define CODES_HEAD		TAILQ_HEAD
+#define CODES_HEAD_INITIALIZER	TAILQ_HEAD_INITIALIZER
+#define CODES_ENTRY		TAILQ_ENTRY
+#define CODES_INIT		TAILQ_INIT
+#define CODES_INSERT_HEAD	TAILQ_INSERT_HEAD
+#define CODES_INSERT_TAIL	TAILQ_INSERT_TAIL
+#define CODES_INSERT_AFTER	TAILQ_INSERT_AFTER
+#define CODES_INSERT_BEFORE	TAILQ_INSERT_BEFORE
+#define CODES_REMOVE		TAILQ_REMOVE
+#define CODES_FOREACH		TAILQ_FOREACH
+#define CODES_FOREACH_REVERSE	TAILQ_FOREACH_REVERSE
+#define CODES_CONCAT		TAILQ_CONCAT
+#define CODES_EMPTY		TAILQ_EMPTY
+#define CODES_FIRST		TAILQ_FIRST
+#define CODES_NEXT		TAILQ_NEXT
+#define CODES_LAST		TAILQ_PREV
+
 /**
  * code_t - a code object
  * @addr: code address
@@ -64,10 +85,31 @@ typedef struct _code {
 	uint32_t	val;
 	uint32_t	tag;
 
-	TAILQ_ENTRY(_code) node;
+	CODES_ENTRY(_code) node;
 } code_t;
 
-typedef TAILQ_HEAD(_codelist, _code) codelist_t;
+typedef CODES_HEAD(_codelist, _code) codelist_t;
+
+
+/*
+ * Cheat defines.
+ */
+#define CHEATS_HEAD		TAILQ_HEAD
+#define CHEATS_HEAD_INITIALIZER	TAILQ_HEAD_INITIALIZER
+#define CHEATS_ENTRY		TAILQ_ENTRY
+#define CHEATS_INIT		TAILQ_INIT
+#define CHEATS_INSERT_HEAD	TAILQ_INSERT_HEAD
+#define CHEATS_INSERT_TAIL	TAILQ_INSERT_TAIL
+#define CHEATS_INSERT_AFTER	TAILQ_INSERT_AFTER
+#define CHEATS_INSERT_BEFORE	TAILQ_INSERT_BEFORE
+#define CHEATS_REMOVE		TAILQ_REMOVE
+#define CHEATS_FOREACH		TAILQ_FOREACH
+#define CHEATS_FOREACH_REVERSE	TAILQ_FOREACH_REVERSE
+#define CHEATS_CONCAT		TAILQ_CONCAT
+#define CHEATS_EMPTY		TAILQ_EMPTY
+#define CHEATS_FIRST		TAILQ_FIRST
+#define CHEATS_NEXT		TAILQ_NEXT
+#define CHEATS_LAST		TAILQ_PREV
 
 /**
  * cheat_t - a cheat object
@@ -76,32 +118,21 @@ typedef TAILQ_HEAD(_codelist, _code) codelist_t;
  * @tag: arbitrary information
  */
 typedef struct _cheat {
-	char		desc[CL_DESC_MAX + 1];
+	char		desc[CHEAT_DESC_MAX + 1];
 	codelist_t	codes;
 	uint32_t	tag;
 
-	TAILQ_ENTRY(_cheat) node;
+	CHEATS_ENTRY(_cheat) node;
 } cheat_t;
 
-typedef TAILQ_HEAD(_cheatlist, _cheat) cheatlist_t;
+typedef CHEATS_HEAD(_cheatlist, _cheat) cheatlist_t;
 
-/**
- * game_t - a game object
- * @title: game title
- * @cheats: game cheats
- * @tag: arbitrary information
+/*
+ * Game defines.
  */
-typedef struct _game {
-	char		title[CL_TITLE_MAX + 1];
-	cheatlist_t	cheats;
-	uint32_t	tag;
-
-	TAILQ_ENTRY(_game) node;
-} game_t;
-
-typedef TAILQ_HEAD(_gamelist, _game) gamelist_t;
-
-
+#define GAMES_HEAD		TAILQ_HEAD
+#define GAMES_HEAD_INITIALIZER	TAILQ_HEAD_INITIALIZER
+#define GAMES_ENTRY		TAILQ_ENTRY
 #define GAMES_INIT		TAILQ_INIT
 #define GAMES_INSERT_HEAD	TAILQ_INSERT_HEAD
 #define GAMES_INSERT_TAIL	TAILQ_INSERT_TAIL
@@ -111,11 +142,27 @@ typedef TAILQ_HEAD(_gamelist, _game) gamelist_t;
 #define GAMES_FOREACH		TAILQ_FOREACH
 #define GAMES_FOREACH_REVERSE	TAILQ_FOREACH_REVERSE
 #define GAMES_CONCAT		TAILQ_CONCAT
-
 #define GAMES_EMPTY		TAILQ_EMPTY
 #define GAMES_FIRST		TAILQ_FIRST
 #define GAMES_NEXT		TAILQ_NEXT
 #define GAMES_LAST		TAILQ_PREV
+
+/**
+ * game_t - a game object
+ * @title: game title
+ * @cheats: game cheats
+ * @tag: arbitrary information
+ */
+typedef struct _game {
+	char		title[GAME_TITLE_MAX + 1];
+	cheatlist_t	cheats;
+	uint32_t	tag;
+
+	GAMES_ENTRY(_game) node;
+} game_t;
+
+typedef GAMES_HEAD(_gamelist, _game) gamelist_t;
+
 
 
 extern code_t *make_code(uint32_t addr, uint32_t val, uint32_t tag);
