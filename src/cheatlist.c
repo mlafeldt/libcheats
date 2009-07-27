@@ -127,7 +127,7 @@ static inline void __remove_games(gamelist_t *list, int _free)
 
 	while ((game = GAMES_FIRST(list)) != NULL) {
 		__remove_cheats(&game->cheats, _free);
-		GAMES_REMOVE(list, game, node);
+		GAMES_REMOVE(list, game, _game, node);
 		if (_free)
 			free(game);
 	}
@@ -160,7 +160,7 @@ void remove_cheat(cheatlist_t *list, cheat_t *cheat, int _free)
 void remove_game(gamelist_t *list, game_t *game, int _free)
 {
 	__remove_cheats(&game->cheats, _free);
-	CHEATS_REMOVE(list, game, node);
+	GAMES_REMOVE(list, game, _game, node);
 	if (_free)
 		free(game);
 }
