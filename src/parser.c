@@ -272,7 +272,7 @@ static int parse_line(const char *line, int nl, parser_ctx_t *ctx, gamelist_t *l
 			parse_err(nl, "make_cheat() failed");
 			return -1;
 		}
-		CHEATS_INSERT_TAIL(&ctx->game->cheats, ctx->cheat, node);
+		CHEATS_INSERT_TAIL(&ctx->game->cheats, ctx->cheat);
 		break;
 
 	case TOK_CHEAT_CODE:

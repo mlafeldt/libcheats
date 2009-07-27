@@ -15,7 +15,7 @@ static void add_game(gamelist_t *list)
 	GAMES_INSERT_TAIL(list, game);
 
 	cheat = make_cheat("Inf. Bar", NULL, 0);
-	CHEATS_INSERT_TAIL(&game->cheats, cheat, node);
+	CHEATS_INSERT_TAIL(&game->cheats, cheat);
 
 	code = make_code(0x123, 0x456, 0);
 	CODES_INSERT_TAIL(&cheat->codes, code, node);
@@ -39,7 +39,7 @@ static void add_game2(gamelist_t *list)
 	}
 
 	cheat = make_cheat("Inf. Bar 2", &codes, 0);
-	CHEATS_INSERT_TAIL(&cheats, cheat, node);
+	CHEATS_INSERT_TAIL(&cheats, cheat);
 
 	game = make_game("Foo Game 2", &cheats, 0);
 	GAMES_INSERT_HEAD(list, game);

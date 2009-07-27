@@ -86,20 +86,21 @@ typedef STAILQ_HEAD(_codelist, _code) codelist_t;
 
 /*
  * Cheat defines.
+ *
+ * NOTE: Use remove_cheat() or free_cheats() to free allocated memory.
  */
-#define CHEATS_HEAD_INITIALIZER	STAILQ_HEAD_INITIALIZER
-#define CHEATS_INIT		STAILQ_INIT
-#define CHEATS_INSERT_HEAD	STAILQ_INSERT_HEAD
-#define CHEATS_INSERT_TAIL	STAILQ_INSERT_TAIL
-#define CHEATS_INSERT_AFTER	STAILQ_INSERT_AFTER
-/* Use remove_cheat() or free_cheats() to also free allocated memory. */
-#define CHEATS_REMOVE		STAILQ_REMOVE
-#define CHEATS_REMOVE_HEAD	STAILQ_REMOVE_HEAD
-#define CHEATS_FOREACH		STAILQ_FOREACH
-#define CHEATS_CONCAT		STAILQ_CONCAT
-#define CHEATS_EMPTY		STAILQ_EMPTY
-#define CHEATS_FIRST		STAILQ_FIRST
-#define CHEATS_NEXT		STAILQ_NEXT
+#define CHEATS_HEAD_INITIALIZER(head)		STAILQ_HEAD_INITIALIZER(head)
+#define CHEATS_INIT(head)			STAILQ_INIT(head)
+#define CHEATS_INSERT_HEAD(head, elm)		STAILQ_INSERT_HEAD(head, elm, FIELD)
+#define CHEATS_INSERT_TAIL(head, elm)		STAILQ_INSERT_TAIL(head, elm, FIELD)
+#define CHEATS_INSERT_AFTER(head, listelm, elm)	STAILQ_INSERT_AFTER(head, listelm, elm, FIELD)
+#define CHEATS_REMOVE(head, elm)		STAILQ_REMOVE(head, elm, _cheat, FIELD)
+#define CHEATS_REMOVE_HEAD(head)		STAILQ_REMOVE_HEAD(head, FIELD)
+#define CHEATS_FOREACH(var, head)		STAILQ_FOREACH(var, head, FIELD)
+#define CHEATS_CONCAT(head1, head2)		STAILQ_CONCAT(head1, head2)
+#define CHEATS_EMPTY(head)			STAILQ_EMPTY(head)
+#define CHEATS_FIRST(head)			STAILQ_FIRST(head)
+#define CHEATS_NEXT(elm)			STAILQ_NEXT(elm, FIELD)
 
 /* Max cheat description length */
 #define CHEAT_DESC_MAX		80

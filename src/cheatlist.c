@@ -115,7 +115,7 @@ static inline void __remove_cheats(cheatlist_t *list, int _free)
 
 	while ((cheat = CHEATS_FIRST(list)) != NULL) {
 		__remove_codes(&cheat->codes, _free);
-		CHEATS_REMOVE(list, cheat, _cheat, node);
+		CHEATS_REMOVE(list, cheat);
 		if (_free)
 			free(cheat);
 	}
@@ -149,7 +149,7 @@ void remove_code(codelist_t *list, code_t *code, int _free)
 void remove_cheat(cheatlist_t *list, cheat_t *cheat, int _free)
 {
 	__remove_codes(&cheat->codes, _free);
-	CHEATS_REMOVE(list, cheat, _cheat, node);
+	CHEATS_REMOVE(list, cheat);
 	if (_free)
 		free(cheat);
 }
