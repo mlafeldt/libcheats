@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "cheatlist.h"
-#include "dbgprintf.h"
 #include "libcheats.h"
 #include "parser.h"
 

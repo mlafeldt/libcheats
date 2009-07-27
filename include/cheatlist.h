@@ -59,6 +59,7 @@
 #define CODES_INSERT_TAIL	TAILQ_INSERT_TAIL
 #define CODES_INSERT_AFTER	TAILQ_INSERT_AFTER
 #define CODES_INSERT_BEFORE	TAILQ_INSERT_BEFORE
+/* Use remove_code() or free_codes() to also free allocated memory. */
 #define CODES_REMOVE		TAILQ_REMOVE
 #define CODES_FOREACH		TAILQ_FOREACH
 #define CODES_FOREACH_REVERSE	TAILQ_FOREACH_REVERSE
@@ -96,6 +97,7 @@ typedef CODES_HEAD(_codelist, _code) codelist_t;
 #define CHEATS_INSERT_TAIL	TAILQ_INSERT_TAIL
 #define CHEATS_INSERT_AFTER	TAILQ_INSERT_AFTER
 #define CHEATS_INSERT_BEFORE	TAILQ_INSERT_BEFORE
+/* Use remove_cheat() or free_cheats() to also free allocated memory. */
 #define CHEATS_REMOVE		TAILQ_REMOVE
 #define CHEATS_FOREACH		TAILQ_FOREACH
 #define CHEATS_FOREACH_REVERSE	TAILQ_FOREACH_REVERSE
@@ -136,6 +138,7 @@ typedef CHEATS_HEAD(_cheatlist, _cheat) cheatlist_t;
 #define GAMES_INSERT_TAIL	TAILQ_INSERT_TAIL
 #define GAMES_INSERT_AFTER	TAILQ_INSERT_AFTER
 #define GAMES_INSERT_BEFORE	TAILQ_INSERT_BEFORE
+/* Use remove_game() or free_games() to also free allocated memory. */
 #define GAMES_REMOVE		TAILQ_REMOVE
 #define GAMES_FOREACH		TAILQ_FOREACH
 #define GAMES_FOREACH_REVERSE	TAILQ_FOREACH_REVERSE

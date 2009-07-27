@@ -26,8 +26,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cheatlist.h"
-#include "dbgprintf.h"
 #include "mystring.h"
+
+#ifdef _DEBUG
+	#define D_PRINTF(args...)	printf(args)
+#else
+	#define D_PRINTF(args...)	do {} while (0)
+#endif
 
 /* Max line length to parse */
 #define LINE_MAX	255
