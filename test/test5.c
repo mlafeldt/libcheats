@@ -52,6 +52,7 @@ int test5(int argc, char *argv[])
 	cheats_init(&cheats);
 	add_game(&cheats.games);
 	add_game2(&cheats.games);
+	cheats_write(&cheats, stdout);
 	cheats_destroy(&cheats);
 
 	return 0;
