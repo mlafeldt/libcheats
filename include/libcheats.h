@@ -26,10 +26,10 @@
 #include "cheatlist.h"
 
 /* Version information */
-#define LIBCHEATS_VERSION	"1.0"
-#define LIBCHEATS_VERNUM	0x0100
-#define LIBCHEATS_VER_MAJOR	1
-#define LIBCHEATS_VER_MINOR	0
+#define LIBCHEATS_VERSION	"0.1"
+#define LIBCHEATS_VERNUM	0x0001
+#define LIBCHEATS_VER_MAJOR	0
+#define LIBCHEATS_VER_MINOR	1
 
 /* Return values */
 #define CHEATS_TRUE		0
