@@ -21,7 +21,17 @@ v0.1 (Jul xx 2009)
 ---===============---
 
 libcheats is a library that can read, manipulate, and write cheat codes in text
-format.
+format. The format is quite simple:
+
+"Game title 1"
+Cheat description 1
+Cheat code 1
+Cheat code 2
+Cheat description 2
+Cheat code 1
+Cheat code 2
+"Game title 2"
+etc.
 
 Although libcheats is quite generic, the current version expects one code line
 to be two 32-bit words. Therefore, you can only use it for systems like the PS2.
