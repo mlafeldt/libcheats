@@ -114,7 +114,7 @@ typedef STAILQ_HEAD(_codelist, _code) codelist_t;
 #define CHEATS_NEXT(elm)			_STAILQ_NEXT(elm)
 
 /* Max cheat description length */
-#define CHEAT_DESC_MAX		80
+#define CHEAT_DESC_MAX	80
 
 /**
  * cheat_t - a cheat object
@@ -152,7 +152,7 @@ typedef STAILQ_HEAD(_cheatlist, _cheat) cheatlist_t;
 #define GAMES_NEXT(elm)				_STAILQ_NEXT(elm)
 
 /* Max game title length */
-#define GAME_TITLE_MAX		80
+#define GAME_TITLE_MAX	80
 
 /**
  * game_t - a game object
@@ -174,18 +174,70 @@ typedef STAILQ_HEAD(_gamelist, _game) gamelist_t;
 /*
  * Some utility functions.
  */
+
+/**
+ * make_code - Create a new code object.
+ * @addr: code address
+ * @val: code value
+ * @tag: arbitrary information
+ * @return: ptr to new code object, or NULL on mem alloc error
+ */
 extern code_t *make_code(uint32_t addr, uint32_t val, uint32_t tag);
+
+/**
+ * make_cheat - Create a new cheat object and populate it.
+ * @desc: cheat description (can be NULL)
+ * @codes: cheat codes (can be NULL)
+ * @tag: arbitrary information
+ * @return: ptr to new cheat object, or NULL on mem alloc error
+ */
 extern cheat_t *make_cheat(const char *desc, codelist_t *codes, uint32_t tag);
+
+/**
+ * make_game - Create a new game object and populate it.
+ * @title: game title (can be NULL)
+ * @cheats: game cheats (can be NULL)
+ * @tag: arbitrary information
+ * @return: ptr to new game object, or NULL on mem alloc error
+ */
 extern game_t *make_game(const char *title, cheatlist_t *cheats, uint32_t tag);
 
+/*
+ * remove_code - Remove a code from a code list and optionally free its memory.
+ */
 extern void remove_code(codelist_t *list, code_t *code, int _free);
+
+/*
+ * remove_cheat - Remove a cheat from a cheat list and optionally free its memory.
+ */
 extern void remove_cheat(cheatlist_t *list, cheat_t *cheat, int _free);
+
+/*
+ * remove_game - Remove a game from a game list and optionally free its memory.
+ */
 extern void remove_game(gamelist_t *list, game_t *game, int _free);
 
+/*
+ * free_codes - Free an entire code list.
+ */
 extern void free_codes(codelist_t *list);
+
+/*
+ * free_cheats - Free an entire cheat list.
+ */
 extern void free_cheats(cheatlist_t *list);
+
+/*
+ * free_games - Free an entire game list.
+ */
 extern void free_games(gamelist_t *list);
 
+/**
+ * find_game_by_title - Search a game list for a game with a certain title.
+ * @title: title to search for
+ * @list: list that is searched
+ * @return: ptr to found game object, or NULL if it could not be found
+ */
 extern game_t *find_game_by_title(const char *title, const gamelist_t *list);
 
 #endif /* _CHEATLIST_H_ */

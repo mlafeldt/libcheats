@@ -166,7 +166,7 @@ int cheats_write_file(cheats_t *cheats, const char *filename)
 }
 
 /**
- * cheats_error_text - Return the text of the last parse error.
+ * cheats_error_text - Return the text of the parse error.
  * @cheats: cheats object
  * @return: error text
  */
