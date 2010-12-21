@@ -1,1 +1,5 @@
+*.a
+*.dll
+*.o
+*.so
 build/
