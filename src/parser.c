@@ -93,7 +93,7 @@ static const char *tok2str(int tok)
  */
 static inline int is_cmt_str(const char *s)
 {
-	return (strlen(s) >= 2 && !strncmp(s, "//", 2)) || (*s == '#');
+	return (s[0] == '/' && s[1] == '/');
 }
 
 /*

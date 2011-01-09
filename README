@@ -33,11 +33,8 @@ Cheat code 2
 "Game title 2"
 etc.
 
-Also, two types of comments are allowed in the cheats file:
-- Script-style comments. All text beginning with a ‘#’ character to the end of
-  the line is ignored.
-- C++-style comments. All text beginning with a ‘//’ sequence to the end of the
-  line is ignored.
+Also, C++-style comments are allowed in the cheats file. All text beginning with
+a ‘//’ sequence to the end of the line is ignored.
 
 Although libcheats is quite generic, the current version expects one code line
 to be two 32-bit words. Therefore, you can only use it for systems like the PS2.
