@@ -1,9 +1,3 @@
-##
-# Makefile to build libcheats for PS2
-#
-# Copyright (C) 2009 misfire <misfire@xploderfreax.de>
-##
-
 EE_INCS += -I ./include
 EE_CFLAGS +=
 EE_LDFLAGS +=
