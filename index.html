@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>libcheats by mlafeldt</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>libcheats</h1>
+        <h2>Portable C library to read, manipulate, and write cheat codes in text format</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/mlafeldt/libcheats/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/mlafeldt/libcheats/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/mlafeldt/libcheats" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>libcheats</h1>
+
+<p>libcheats is a portable C library to read, manipulate, and write cheat codes in
+text format.</p>
+
+<p>The format is quite simple:</p>
+
+<pre><code>"Game title 1"
+Cheat description 1
+Cheat code 1
+Cheat code 2
+Cheat description 2
+Cheat code 1
+Cheat code 2
+
+"Game title 2"
+etc.
+</code></pre>
+
+<p>Also, C++-style comments are allowed; all text beginning with a <code>//</code> sequence to
+the end of the line is ignored.</p>
+
+<p>Example:</p>
+
+<pre><code>"TimeSplitters"
+// some senseless comment
+Mastercode
+902D51F8 0C0B95F6
+Invincible
+203C8728 00000001
+</code></pre>
+
+<p>Although libcheats is quite generic, the current version expects one code line
+to be two 32-bit words. Therefore, you can only use it for systems like the PS2.
+Without this size limitation, I hope that libcheats will someday become a standard
+library when it comes to cheat code parsing/processing.</p>
+
+<h2>Build</h2>
+
+<p>To compile libcheats, you need CMake and a C compiler like gcc.</p>
+
+<p>I recommend doing an out-of-source build:</p>
+
+<pre><code>$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+</code></pre>
+
+<p>To install libcheats:</p>
+
+<pre><code># make install
+</code></pre>
+
+<h2>Usage</h2>
+
+<p>Simply link the library to your project and include the header files.</p>
+
+<p>Take a look at the source files in the test directory for working samples.</p>
+
+<h2>License</h2>
+
+<p>libcheats is licensed under the terms of the MIT License. See LICENSE file.</p>
+
+<h2>Contact</h2>
+
+<ul>
+<li>Web: <a href="http://mlafeldt.github.com/libcheats">http://mlafeldt.github.com/libcheats</a>
+</li>
+<li>Mail: <a href="mailto:mathias.lafeldt@gmail.com">mathias.lafeldt@gmail.com</a>
+</li>
+<li>Twitter: <a href="https://twitter.com/mlafeldt">@mlafeldt</a>
+</li>
+</ul>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
