@@ -70,9 +70,7 @@ Take a look at the source files in the test directory for working samples.
    Disclaimer
 ---==========---
 
-libcheats comes with ABSOLUTELY NO WARRANTY. It is covered by the GNU Lesser
-General Public License. Please see files COPYING and COPYING.LESSER for further
-information.
+libcheats is licensed under the terms of the MIT License. See LICENSE file.
 
 
 ---====---
