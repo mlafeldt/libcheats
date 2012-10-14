@@ -33,7 +33,31 @@
 <p>libcheats is a portable C library to read, manipulate, and write cheat codes in
 text format.</p>
 
-<p>The format is quite simple:</p>
+<p>Tools like <a href="http://mlafeldt.github.com/cb2util">cb2util</a> and <a href="http://mlafeldt.github.com/ps2rd">PS2rd</a> swear by libcheats to process their cheat codes.</p>
+
+<h2>Installation</h2>
+
+<p>To compile libcheats, you need CMake and a C compiler like gcc.</p>
+
+<p>I recommend doing an out-of-source build:</p>
+
+<pre><code>$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+</code></pre>
+
+<p>To install libcheats:</p>
+
+<pre><code># make install
+</code></pre>
+
+<h2>Usage</h2>
+
+<p>Simply link the library to your project and include the header files. Take a look
+at the source files in the <a href="https://github.com/mlafeldt/libcheats/tree/master/test">test directory</a> for working examples.</p>
+
+<p>libcheats expects text files to have the following format:</p>
 
 <pre><code>"Game title 1"
 Cheat description 1
@@ -62,35 +86,12 @@ Invincible
 
 <p>Although libcheats is quite generic, the current version expects one code line
 to be two 32-bit words. Therefore, you can only use it for systems like the PS2.
-Without this size limitation, I hope that libcheats will someday become a standard
-library when it comes to cheat code parsing/processing.</p>
-
-<h2>Build</h2>
-
-<p>To compile libcheats, you need CMake and a C compiler like gcc.</p>
-
-<p>I recommend doing an out-of-source build:</p>
-
-<pre><code>$ mkdir build
-$ cd build
-$ cmake ..
-$ make
-</code></pre>
-
-<p>To install libcheats:</p>
-
-<pre><code># make install
-</code></pre>
-
-<h2>Usage</h2>
-
-<p>Simply link the library to your project and include the header files.</p>
-
-<p>Take a look at the source files in the test directory for working samples.</p>
+Without this size limitation, I hope that libcheats will someday become a
+standard library for cheat code parsing/processing.</p>
 
 <h2>License</h2>
 
-<p>libcheats is licensed under the terms of the MIT License. See LICENSE file.</p>
+<p>libcheats is licensed under the terms of the MIT License. See <a href="https://github.com/mlafeldt/libcheats/blob/master/LICENSE">LICENSE</a> file.</p>
 
 <h2>Contact</h2>
 
