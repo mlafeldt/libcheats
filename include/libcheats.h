@@ -15,10 +15,10 @@
 #include "cheatlist.h"
 
 /* Version information */
-#define LIBCHEATS_VERSION	"0.1"
-#define LIBCHEATS_VERNUM	0x0001
+#define LIBCHEATS_VERSION	"0.2"
+#define LIBCHEATS_VERNUM	0x0002
 #define LIBCHEATS_VER_MAJOR	0
-#define LIBCHEATS_VER_MINOR	1
+#define LIBCHEATS_VER_MINOR	2
 
 /* Return values */
 #define CHEATS_TRUE		0
