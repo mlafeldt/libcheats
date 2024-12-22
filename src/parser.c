@@ -50,8 +50,8 @@ typedef struct _parser_ctx {
 } parser_ctx_t;
 
 /* Information about last error */
-char parse_error_text[256];
-int parse_error_line;
+static char parse_error_text[256];
+static int parse_error_line;
 
 
 /*
